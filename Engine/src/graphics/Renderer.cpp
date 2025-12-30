@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include <glad/glad.h>
 #include <iostream>
+#include "game/Properties/Camera.h"
 
 Renderer::Renderer(int width, int height)
     : _width(width), _height(height), _clearColor(0.1f, 0.1f, 0.15f, 1.0f)
@@ -29,16 +30,13 @@ void Renderer::ClearColor(float r, float g, float b, float a) {
 }
 
 void Renderer::Resize(int w, int h) {
-    _width = w;
-    _height = h;
-    glViewport(0, 0, w, h);
-    _camera.SetAspect(static_cast<float>(w) / static_cast<float>(h));
+	_width = w;
+	_height = h;
 }
 
-void Renderer::DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4& modelMatrix) {
+void Renderer::DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4& modelMatrix, const Camera& camera) {
     shader.Use();
-
-    glm::mat4 mvp = _camera.GetProjection() * _camera.GetView() * modelMatrix;
+    glm::mat4 mvp = camera.GetProjection() * camera.GetView() * modelMatrix;
     shader.SetMat4("u_MVP", mvp);
 
     mesh.Bind();

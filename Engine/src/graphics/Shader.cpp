@@ -43,6 +43,8 @@ bool Shader::Load(const std::string& vertexPath, const std::string& fragmentPath
     glDeleteShader(vShader);
     glDeleteShader(fShader);
 
+	std::cout << "shader loaded" << std::endl;
+
     return true;
 }
 

@@ -15,12 +15,9 @@ public:
 	void Run();
 	void SetScene(std::shared_ptr<Scene> newScene);
 
-	void ProcessInput(float dt);
-	void Update(float dt);
-	void Render();
+	void ProcessSceneFlags(Flags<SceneFlags> &flags);
 
 private:
-
 	Window _window;
 	Renderer _renderer;
 	Timer _timer;

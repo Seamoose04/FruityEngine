@@ -1,10 +1,9 @@
 #include "Window.h"
-#include <glad/glad.h>
 #include <iostream>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
-Window::Window(int w, int h, const std::string& title)
-	: _width(w), _height(h)
-{
+Window::Window(int w, int h, const std::string& title) : size({w, h}) {
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW\n";
 		std::exit(EXIT_FAILURE);
@@ -14,7 +13,7 @@ Window::Window(int w, int h, const std::string& title)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	_handle = glfwCreateWindow(_width, _height, title.c_str(), nullptr, nullptr);
+	_handle = glfwCreateWindow(size->x, size->y, title.c_str(), nullptr, nullptr);
 	if (!_handle) {
 		std::cerr << "Failed to create GLFW window\n";
 		glfwTerminate();
@@ -27,10 +26,18 @@ Window::Window(int w, int h, const std::string& title)
 		std::cerr << "Failed to initialize GLAD\n";
 		std::exit(EXIT_FAILURE);
 	}
-
-	glfwSetFramebufferSizeCallback(_handle, [](GLFWwindow*, int w, int h) {
+	
+	glfwSetWindowUserPointer(_handle, this);
+	glfwSetFramebufferSizeCallback(_handle, [](GLFWwindow* window, int w, int h) {
 		glViewport(0, 0, w, h);
+		auto self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+		self->size.Set({w, h});
 	});
+	glfwSetCursorPosCallback(_handle, [](GLFWwindow* window, double x, double y) {
+		auto self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+		self->SetMousePos(glm::vec2(x, y));
+	});
+	ShowCursor();
 	
 	glEnable(GL_DEPTH_TEST);
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
@@ -65,18 +72,83 @@ void Window::GetSize(int& w, int& h) const {
 	glfwGetFramebufferSize(_handle, &w, &h);
 }
 
+void Window::HideCursor() {
+	glfwSetInputMode(_handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	_flags.ClearFlag(WindowFlags::CursorRelative);
+	_flags.AddFlag(WindowFlags::CursorAbsolute);
+}
+
+void Window::ShowCursor() {
+	glfwSetInputMode(_handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	_flags.ClearFlag(WindowFlags::CursorRelative);
+	_flags.AddFlag(WindowFlags::CursorAbsolute);
+}
+
+void Window::LockCursor() {
+	glfwSetInputMode(_handle, GLFW_CURSOR, GLFW_CURSOR_CAPTURED);
+	_flags.ClearFlag(WindowFlags::CursorRelative);
+	_flags.AddFlag(WindowFlags::CursorAbsolute);
+}
+
+void Window::DisableCursor() {
+	glfwPollEvents();
+	glfwSetInputMode(_handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	_flags.ClearFlag(WindowFlags::CursorAbsolute);
+	_flags.AddFlag(WindowFlags::CursorRelative);
+}
+
+void Window::SetMouseRaw(bool raw) {
+	if (raw) {
+		if (glfwRawMouseMotionSupported()) {
+			glfwSetInputMode(_handle, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+		} else {
+			std::cerr << "raw mouse motion NOT supported" << std::endl;
+		}
+	} else {
+		glfwSetInputMode(_handle, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
+	}
+}
+
 bool Window::IsKeyPressed(int key) const {
     return glfwGetKey(_handle, key) == GLFW_PRESS;
 }
 
-double Window::GetMouseX() const {
-    double x, y;
-    glfwGetCursorPos(_handle, &x, &y);
-    return x;
+glm::vec2 Window::GetMousePos() const {
+	int w, h;
+	GetSize(w, h);
+
+	// double x, y;
+	// glfwGetCursorPos(_handle, &x, &y);
+
+	// return glm::vec2(x / w, y / h);
+	return _cursorPos / glm::vec2(w, h);
 }
 
-double Window::GetMouseY() const {
-    double x, y;
-    glfwGetCursorPos(_handle, &x, &y);
-    return y;
+void Window::SetMousePos(glm::vec2 pos) {
+	if (_flags.CheckFlag(WindowFlags::CursorAbsolute)) {
+		_cursorPos = pos;
+		return;
+	}
+	if (_flags.CheckFlag(WindowFlags::CursorRelative)) {
+		int w, h;
+		GetSize(w, h);
+		glm::vec2 centered = pos - glm::vec2(w / 2.0f, h / 2.0f);
+
+		if (_lastCursorPos.IsInitialized()) {
+			_cursorPos += centered - _lastCursorPos.Get();
+			std::cout << (centered - _lastCursorPos.Get()).x << std::endl;
+			_lastCursorPos.Reset();
+			_lastCursorPos = centered;
+		} else {
+			std::cout << "initializing" << std::endl;
+			_lastCursorPos = centered;
+		}
+
+		return;
+	}
 }
+
+void Window::ResetMousePos() {
+	_cursorPos = glm::vec2(0);
+}
+

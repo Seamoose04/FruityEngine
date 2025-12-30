@@ -12,12 +12,19 @@
         {
             "type": "MeshRenderer",
             "data": {
-				"mesh": "meshes/cube.obj",
+				"mesh": "Monkey.obj",
 				"shader": {
-					"vertex": "shaders/basic.vert",
-					"fragment": "shaders/basic.frag"
+					"vertex": "basic.vert",
+					"fragment": "basic.frag"
 				}
 			}
-        }
+        },
+		{
+			"type": "Rotator",
+			"data": {
+				"xRot": 20,
+				"yRot": 20
+			}
+		}
     ]
 }

@@ -31,22 +31,13 @@ else()
 endif()
 
 # Copy assets
-file(GLOB_RECURSE ASSETS
-    RELATIVE "${CMAKE_SOURCE_DIR}/Game/assets"
-    "${CMAKE_SOURCE_DIR}/Game/assets/*"
+add_custom_target(copy_assets ALL
+    COMMAND ${CMAKE_COMMAND} -E rm -rf  $<TARGET_FILE_DIR:Game>/assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Game/assets
+        $<TARGET_FILE_DIR:Game>/assets
+	COMMENT "Copying game assets..."
 )
-
 add_custom_command(TARGET Game POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:Game>/assets
-    COMMAND ${CMAKE_COMMAND} -E echo "Copying asset files..."
+    COMMAND ${CMAKE_COMMAND} --build . --target copy_assets
 )
-foreach(ASSET ${ASSETS})
-    get_filename_component(ASSET_DIR "${ASSET}" PATH)
-    add_custom_command(
-        TARGET Game POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:Game>/assets/${ASSET_DIR}"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_SOURCE_DIR}/Game/assets/${ASSET}"
-            "$<TARGET_FILE_DIR:Game>/assets/${ASSET}"
-    )
-endforeach()

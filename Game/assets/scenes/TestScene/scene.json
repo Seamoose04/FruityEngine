@@ -1,5 +1,6 @@
 {
     "objects": [
-        "objects/player.json"
+        "objects/player.json",
+		"objects/cube.json"
     ]
 }

@@ -1,14 +1,13 @@
 #include "Scene.h"
-#include <fstream>
 #include <iostream>
-#include "util/Registry.h"
 #include "core/FileLoaders/JSONLoader.h"
+#include "game/Properties/Camera.h"
 
 using json = nlohmann::json;
 
 std::shared_ptr<Scene> Scene::LoadFromFile(const std::string& path) {
     auto scene = std::make_shared<Scene>();
-    scene->_scenePath = std::filesystem::path(path).parent_path();
+    scene->_path = std::filesystem::path(path).parent_path();
 
     JSONLoader loader;
     json sceneJson = *static_cast<json*>(loader.Load(path));
@@ -21,7 +20,7 @@ std::shared_ptr<Scene> Scene::LoadFromFile(const std::string& path) {
     for (const auto& objPath : sceneJson["objects"]) {
         if (!objPath.is_string()) continue;
 
-        std::filesystem::path fullPath = scene->_scenePath + "/" + objPath.get<std::string>();
+        std::filesystem::path fullPath = scene->_path + "/" + objPath.get<std::string>();
         if (!std::filesystem::exists(fullPath)) {
             std::cerr << "[Scene] Missing GameObject file: " << fullPath << "\n";
             continue;
@@ -30,7 +29,7 @@ std::shared_ptr<Scene> Scene::LoadFromFile(const std::string& path) {
         try {
             json objectJson = *static_cast<json*>(loader.Load(fullPath.string()));
             auto gameObject = std::make_shared<GameObject>();
-            gameObject->FromJSON(objectJson);
+            gameObject->FromJSON(objectJson, scene);
             scene->_objects.push_back(gameObject);
         }
         catch (const std::exception& e) {
@@ -39,6 +38,33 @@ std::shared_ptr<Scene> Scene::LoadFromFile(const std::string& path) {
     }
 
     return scene;
+}
+
+void Scene::SetCamera(std::weak_ptr<Camera> camera) {
+	_camera = camera;
+}
+
+Camera &Scene::GetCamera() const {
+	if (auto lockedCamera = _camera.lock()) {
+		return *(Camera*)lockedCamera.get();
+	}
+	std::cerr << "No camera in scene" << std::endl;
+}
+
+std::string Scene::GetPath() const {
+	return _path;
+}
+
+Flags<SceneFlags> &Scene::GetFlags() {
+	return _flags;
+}
+
+void Scene::SetFlag(SceneFlags flag) {
+	_flags.AddFlag(flag);
+}
+
+void Scene::ClearFlag(SceneFlags flag) {
+	_flags.ClearFlag(flag);
 }
 
 void Scene::Start() {
@@ -57,6 +83,7 @@ void Scene::HandleInput(const Window& window, float dt) {
 }
 
 void Scene::Render(Renderer &renderer) {
+	GetCamera().UpdateView();
     for (auto& obj : _objects)
         obj->Render(renderer);
 }

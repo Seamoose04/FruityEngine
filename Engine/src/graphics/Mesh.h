@@ -3,15 +3,14 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
-struct Vertex {
-    glm::vec3 position;
-    glm::vec3 color;
-};
-
 class Mesh {
 public:
     Mesh() = default;
-    Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+    Mesh(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices);
+    Mesh(const Mesh&) = delete;
+    Mesh(Mesh&& other) noexcept;
+    Mesh& operator=(const Mesh&) = delete;
+    Mesh& operator=(Mesh&& other) noexcept;
     ~Mesh();
 
     void Bind() const;
@@ -22,7 +21,7 @@ private:
     unsigned int vao = 0;
     unsigned int vbo = 0;
     unsigned int ebo = 0;
-    std::vector<Vertex> vertices;
+    std::vector<glm::vec3> vertices;
     std::vector<unsigned int> indices;
 
     void SetupMesh();
