@@ -54,11 +54,15 @@ void App::ProcessSceneFlags(Flags<SceneFlags> &flags) {
 	if (flags.ProcessFlag(SceneFlags::CursorNormal)) {
 		_window.ShowCursor();
 	}
+	if (flags.CheckFlag(SceneFlags::CursorHidden) && flags.CheckFlag(SceneFlags::CursorLocked) && flags.CheckFlag(SceneFlags::VNC)) {
+		flags.ClearFlag(SceneFlags::CursorHidden);
+		flags.ClearFlag(SceneFlags::CursorLocked);
+		_window.DisableCursorVNC();
+	}
 	if (flags.CheckFlag(SceneFlags::CursorHidden) && flags.CheckFlag(SceneFlags::CursorLocked)) {
 		flags.ClearFlag(SceneFlags::CursorHidden);
 		flags.ClearFlag(SceneFlags::CursorLocked);
 		_window.DisableCursor();
-		std::cout << "cursor disabled" << std::endl;
 	}
 	if (flags.ProcessFlag(SceneFlags::CursorHidden)) {
 		_window.HideCursor();

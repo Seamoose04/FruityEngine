@@ -14,7 +14,8 @@ enum class SceneFlags : unsigned long {
 	CursorRaw = 1 << 3,
 	ResetCursor = 1 << 4,
 	ReloadScene = 1 << 5,
-	Quit = 1 << 6
+	VNC = 1 << 6,
+	Quit = 1 << 7
 };
 
 class Scene {

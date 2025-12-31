@@ -1,9 +1,10 @@
 #include "Window.h"
+#include "GLFW/glfw3.h"
 #include <iostream>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
-Window::Window(int w, int h, const std::string& title) : size({w, h}) {
+Window::Window(int w, int h, const std::string& title) {
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW\n";
 		std::exit(EXIT_FAILURE);
@@ -13,7 +14,13 @@ Window::Window(int w, int h, const std::string& title) : size({w, h}) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	_handle = glfwCreateWindow(size->x, size->y, title.c_str(), nullptr, nullptr);
+	size.OnChange([this](glm::vec2 value) {
+		this->center.Set(value / 2.0f);
+	});
+
+        size.Set({w, h});
+
+        _handle = glfwCreateWindow(size->x, size->y, title.c_str(), nullptr, nullptr);
 	if (!_handle) {
 		std::cerr << "Failed to create GLFW window\n";
 		glfwTerminate();
@@ -97,6 +104,12 @@ void Window::DisableCursor() {
 	_flags.AddFlag(WindowFlags::CursorRelative);
 }
 
+void Window::DisableCursorVNC() {
+	glfwSetInputMode(_handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	_flags.ClearFlag(WindowFlags::CursorAbsolute);
+	_flags.AddFlag(WindowFlags::CursorRelative);
+}
+
 void Window::SetMouseRaw(bool raw) {
 	if (raw) {
 		if (glfwRawMouseMotionSupported()) {
@@ -114,14 +127,7 @@ bool Window::IsKeyPressed(int key) const {
 }
 
 glm::vec2 Window::GetMousePos() const {
-	int w, h;
-	GetSize(w, h);
-
-	// double x, y;
-	// glfwGetCursorPos(_handle, &x, &y);
-
-	// return glm::vec2(x / w, y / h);
-	return _cursorPos / glm::vec2(w, h);
+	return _cursorPos / center.Get();
 }
 
 void Window::SetMousePos(glm::vec2 pos) {
@@ -130,25 +136,20 @@ void Window::SetMousePos(glm::vec2 pos) {
 		return;
 	}
 	if (_flags.CheckFlag(WindowFlags::CursorRelative)) {
-		int w, h;
-		GetSize(w, h);
-		glm::vec2 centered = pos - glm::vec2(w / 2.0f, h / 2.0f);
+		glm::vec2 centered = pos - center.Get();
 
 		if (_lastCursorPos.IsInitialized()) {
-			_cursorPos += centered - _lastCursorPos.Get();
-			std::cout << (centered - _lastCursorPos.Get()).x << std::endl;
-			_lastCursorPos.Reset();
-			_lastCursorPos = centered;
-		} else {
-			std::cout << "initializing" << std::endl;
-			_lastCursorPos = centered;
+			glm::vec2 delta = centered - _lastCursorPos.Get();
+			_cursorPos += delta;
 		}
+		_lastCursorPos.Set(centered);
 
 		return;
 	}
 }
 
 void Window::ResetMousePos() {
+	glfwSetCursorPos(_handle, center->x, center->y);
 	_cursorPos = glm::vec2(0);
 }
 

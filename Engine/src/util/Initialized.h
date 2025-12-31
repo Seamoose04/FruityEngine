@@ -62,6 +62,11 @@ public:
 		return _value;
 	}
 
+	void Set(const T &value) {
+		_value = value;
+		_initialized = true;
+	}
+
 	// Reset state
 	void Reset() {
 		_initialized = false;

@@ -30,6 +30,7 @@ public:
 	void ShowCursor();
 	void LockCursor();
 	void DisableCursor();
+	void DisableCursorVNC();
 	void SetMouseRaw(bool raw);
 
 	GLFWwindow *GetHandle() const { return _handle; }
@@ -40,6 +41,7 @@ public:
 	void ResetMousePos();
 
 	Observable<glm::vec2> size;
+	Observable<glm::vec2> center;
 
 private:
 	GLFWwindow *_handle = nullptr;

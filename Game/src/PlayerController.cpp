@@ -16,10 +16,10 @@ public:
 		std::cout << "Player says: " << _startMessage << "\n";
 		std::cout << "Raw mouse supported: " << glfwRawMouseMotionSupported() << std::endl;
 		if (auto lockedScene = _scene.lock()) {
+			lockedScene->SetFlag(SceneFlags::VNC);
 			lockedScene->SetFlag(SceneFlags::CursorLocked);
 			lockedScene->SetFlag(SceneFlags::CursorHidden);
 		}
-		std::cout << "SceneFlags::Cursor set" << std::endl;
 	}
     void HandleInput(const Window &window, float dt) override {
 		if (window.IsKeyPressed(GLFW_KEY_W)) {
@@ -42,11 +42,10 @@ public:
 
 		glm::vec2 mousePos = window.GetMousePos();
  		auto &mutatableWin = const_cast<Window&>(window);
-	 	// mutatableWin.ResetMousePos();
-		// std::cout << "reset mouse" << std::endl;
+	 	mutatableWin.ResetMousePos();
 
-		_transform->SetRotation(glm::vec3(0, mousePos.x * _mouseSpeed, 0));
-		// _transform->Rotate(glm::vec3(0, mousePos.x * _mouseSpeed, 0));
+		// _transform->SetRotation(glm::vec3(0, mousePos.x * _mouseSpeed, 0));
+		_transform->Rotate(glm::vec3(0, mousePos.x * _mouseSpeed, 0));
 	}
 
 private:

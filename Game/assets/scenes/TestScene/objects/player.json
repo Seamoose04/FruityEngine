@@ -14,7 +14,7 @@
             "data": {
 				"startMessage": "Hi there!",
 				"speed": 8.0,
-				"mouseSpeed": 1.0
+				"mouseSpeed": 10.0
 			}
         },
 		{
