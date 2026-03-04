@@ -12,7 +12,7 @@ target_include_directories(glad PUBLIC external/glad/include)
 
 # GLM
 add_library(glm INTERFACE)
-target_link_libraries(glm INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
+target_include_directories(glm INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
 
 # stb_image
 add_library(stb INTERFACE)

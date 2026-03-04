@@ -11,7 +11,7 @@ void MeshRenderer::FromJSON(const json &data, std::weak_ptr<Scene> scene) {
 
 	if (data.contains("mesh")) {
 		OBJLoader loader;
-		std::string meshPath = "Game/assets/meshes/" + (std::string)data["mesh"];
+		std::string meshPath = "assets/meshes/" + (std::string)data["mesh"];
 		Mesh* meshPtr = static_cast<Mesh*>(loader.Load(meshPath));
         _mesh = std::move(*meshPtr);
 		delete meshPtr;
@@ -22,8 +22,8 @@ void MeshRenderer::FromJSON(const json &data, std::weak_ptr<Scene> scene) {
 	if (data.contains("shader")) {
 		json shaderData = data["shader"];
 		if (shaderData.contains("vertex") && shaderData.contains("fragment")) {
-			std::string vPath = "Game/assets/shaders/" + (std::string)shaderData["vertex"];
-			std::string fPath = "Game/assets/shaders/" + (std::string)shaderData["fragment"];
+			std::string vPath = "assets/shaders/" + (std::string)shaderData["vertex"];
+			std::string fPath = "assets/shaders/" + (std::string)shaderData["fragment"];
 			_shader.Load(vPath, fPath);
 		}
 	}

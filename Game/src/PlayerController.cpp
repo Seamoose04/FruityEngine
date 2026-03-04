@@ -22,18 +22,6 @@ public:
 		}
 	}
     void HandleInput(const Window &window, float dt) override {
-		if (window.IsKeyPressed(GLFW_KEY_W)) {
-			_transform->position += _transform->Forward() * dt * _speed;
-		}
-		if (window.IsKeyPressed(GLFW_KEY_S)) {
-			_transform->position -= _transform->Forward() * dt * _speed;
-		}
-		if (window.IsKeyPressed(GLFW_KEY_A)) {
-			_transform->position -= _transform->Right() * dt * _speed;
-		}
-		if (window.IsKeyPressed(GLFW_KEY_D)) {
-			_transform->position += _transform->Right() * dt * _speed;
-		}
 		if (window.IsKeyPressed(GLFW_KEY_Q)) {
 			if (auto lockedScene = _scene.lock()) {
 				lockedScene->SetFlag(SceneFlags::Quit);

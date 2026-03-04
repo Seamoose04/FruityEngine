@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 std::shared_ptr<Scene> Scene::LoadFromFile(const std::string& path) {
     auto scene = std::make_shared<Scene>();
-    scene->_path = std::filesystem::path(path).parent_path();
+    scene->_path = std::filesystem::path(path).parent_path().string();
 
     JSONLoader loader;
     json sceneJson = *static_cast<json*>(loader.Load(path));
