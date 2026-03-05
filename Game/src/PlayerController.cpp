@@ -6,18 +6,13 @@
 class PlayerController : public Property {
 public:
 	void FromJSON(const json& data, std::weak_ptr<Scene> scene) override {
-		_startMessage = data["startMessage"];
 		_speed = data["speed"];
-		_mouseSpeed = data["mouseSpeed"];
 		_scene = scene;
 	}
 	void OnCreate() override {
 		_transform.From(_parent);
-		std::cout << "Player says: " << _startMessage << "\n";
-		std::cout << "Raw mouse supported: " << glfwRawMouseMotionSupported() << std::endl;
 		if (auto lockedScene = _scene.lock()) {
 			lockedScene->SetFlag(SceneFlags::VNC);
-			lockedScene->SetFlag(SceneFlags::CursorLocked);
 			lockedScene->SetFlag(SceneFlags::CursorHidden);
 		}
 	}
@@ -27,20 +22,11 @@ public:
 				lockedScene->SetFlag(SceneFlags::Quit);
 			}
 		}
-
-		glm::vec2 mousePos = window.GetMousePos();
- 		auto &mutatableWin = const_cast<Window&>(window);
-	 	mutatableWin.ResetMousePos();
-
-		// _transform->SetRotation(glm::vec3(0, mousePos.x * _mouseSpeed, 0));
-		_transform->Rotate(glm::vec3(0, mousePos.x * _mouseSpeed, 0));
 	}
 
 private:
 	std::weak_ptr<Scene> _scene;
-	std::string _startMessage;
 	float _speed;
-	float _mouseSpeed;
 	PropertyRef<Transform> _transform;
 };
 
