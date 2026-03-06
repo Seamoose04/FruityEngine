@@ -27,6 +27,13 @@ void PostProcessVolume::OnCreate() {
 
 void PostProcessVolume::Render(Renderer& renderer) {
     if (!_registered && _sceneNode && _outputNode) {
+        int width = renderer.GetWidth();
+        int height = renderer.GetHeight();
+
+        for (auto& [id, effect] : _effects) {
+            effect->Init(width, height);
+        }
+
         renderer.SetPostProcessGraph(_sceneNode, _outputNode);
         _registered = true;
     }

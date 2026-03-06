@@ -25,7 +25,8 @@ public:
     void SetPostProcessGraph(SceneEffect* screenNode, RenderToScreenEffect* outputNode);
     void ClearPostProcessGraph();
 
-    Framebuffer& GetHDRBuffer();
+    int GetWidth() const;
+    int GetHeight() const;
 
 private:
     int _width, _height;

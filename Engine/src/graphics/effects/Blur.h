@@ -2,13 +2,16 @@
 
 #include "graphics/PostProcessEffect.h"
 
-class ThresholdEffect : public PostProcessEffect {
+class BlurEffect : public PostProcessEffect {
 public:
     void Init(int width, int height) override;
     void Execute() override;
     void FromJSON(const json& data) override;
+    Framebuffer* GetOutput() override;
 
 private:
-    float _threshold = 1.0f;
+    int _passes;
+    float _size = 1.0f;
+    Framebuffer _pingPong[2];
     Shader _shader;
 };

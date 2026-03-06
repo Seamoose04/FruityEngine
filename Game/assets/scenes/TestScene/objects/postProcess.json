@@ -6,7 +6,8 @@
             "data": {
                 "effects": [
                     { "id": "scene", "type": "Scene" },
-                    { "id": "output", "type": "RenderToScreen", "input": "scene" }
+                    { "id": "blurred", "type": "BlurEffect", "input": "scene", "size": 1.0, "passes": 1 },
+                    { "id": "output", "type": "RenderToScreen", "input": "blurred" }
                 ]
             }
         }

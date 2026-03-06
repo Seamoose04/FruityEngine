@@ -9,8 +9,6 @@ void ThresholdEffect::FromJSON(const json& data) {
 }
 
 void ThresholdEffect::Init(int width, int height) {
-    _width = _width;
-    _height = _height;
     _output = Framebuffer(width, height, GL_RGBA16F);
     _shader.Load(ENGINE_SHADER_PATH + "threshold.vert", ENGINE_SHADER_PATH + "threshold.frag");
 }

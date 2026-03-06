@@ -43,6 +43,7 @@ foreach(SHADER ${SHADERS})
     get_filename_component(SHADER_NAME ${SHADER} NAME)
     add_custom_command(
         TARGET copy_shaders
+		POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SHADER}" "${SHADER_OUTPUT_DIR}/${SHADER_NAME}"
     )
 endforeach()

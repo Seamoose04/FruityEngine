@@ -31,10 +31,11 @@ else()
 endif()
 
 # Copy assets
-add_custom_command(TARGET Game POST_BUILD
+add_custom_target(CopyAssets ALL
     COMMAND ${CMAKE_COMMAND} -E rm -rf $<TARGET_FILE_DIR:Game>/assets
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/Game/assets
         $<TARGET_FILE_DIR:Game>/assets
     COMMENT "Copying game assets..."
+    DEPENDS Game
 )

@@ -48,8 +48,6 @@ void Renderer::DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4&
 
 void Renderer::SetPostProcessGraph(SceneEffect* sceneNode, RenderToScreenEffect* outputNode) {
     sceneNode->SetHDRBuffer(&_hdrBuffer);
-    
-    outputNode->Init(_width, _height);
 
     _postProcessOutput = outputNode;
     std::cout << "Post-process graph registered" << std::endl;
@@ -71,4 +69,12 @@ void Renderer::Resize(int w, int h) {
     if (_postProcessOutput) {
         _postProcessOutput->Resize(w, h);
     }
+}
+
+int Renderer::GetWidth() const {
+    return _width;
+}
+
+int Renderer::GetHeight() const {
+    return _height;
 }
