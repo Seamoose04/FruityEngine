@@ -6,6 +6,7 @@ static const std::string ENGINE_SHADER_PATH = "../../Engine/Shaders/";
 
 void ThresholdEffect::FromJSON(const json& data) {
     _threshold = data.value("threshold", 1.0f);
+    _knee = data.value("knee", 0.0f);
 }
 
 void ThresholdEffect::Init(int width, int height) {
@@ -27,6 +28,7 @@ void ThresholdEffect::Execute() {
     _shader.Use();
     _shader.SetInt("u_Input", 0);
     _shader.SetFloat("u_Threshold", _threshold);
+    _shader.SetFloat("u_Knee", _knee);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, input->GetOutput()->GetColorTexture());
