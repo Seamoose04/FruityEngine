@@ -1,0 +1,8 @@
+{
+    "$import": "emissive_base.json",
+    "$override": {
+        "shader": {
+            "vertex": "overridden.vert"
+        }
+    }
+}

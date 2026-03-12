@@ -3,11 +3,10 @@
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
-#include "game/Scene.h"
 
 class Transform : public Property {
 public:
-    void FromJSON(const json& data, std::weak_ptr<Scene> scene) override;
+    void FromJSON(const json& data) override;
 
 	void Rotate(const glm::vec3 &degrees);
 	void SetRotation(const glm::vec3 &degrees);

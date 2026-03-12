@@ -5,12 +5,12 @@
 
 class Rotator : public Property {
 public:
-	void FromJSON(const json& data, std::weak_ptr<Scene> scene) override {
+	void FromJSON(const json& data) override {
 		_xRot = data.contains("xRot") ? (float)data["xRot"] : 0.0f;
 		_yRot = data.contains("yRot") ? (float)data["yRot"] : 0.0f;
 		_zRot = data.contains("zRot") ? (float)data["zRot"] : 0.0f;
 	}
-    void OnCreate() override {
+    void OnCreate(std::weak_ptr<Scene> scene) override {
         _transform.From(_parent);
     }
 	void Update(float dt) override {

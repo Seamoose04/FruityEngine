@@ -13,8 +13,8 @@ class Property : public std::enable_shared_from_this<Property>{
 public:
     Property() = default;
     virtual ~Property() = default;
-    virtual void FromJSON(const json &data, std::weak_ptr<Scene> scene) {}
-    virtual void OnCreate() {}
+    virtual void FromJSON(const json &data) {}
+    virtual void OnCreate(std::weak_ptr<Scene> scene) {}
     virtual void Update(float dt) {}
     virtual void OnDestroy() {}
     virtual void HandleInput(const Window& window, float dt) {}

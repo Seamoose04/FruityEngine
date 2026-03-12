@@ -18,7 +18,7 @@ enum class SceneFlags : unsigned long {
 	Quit = 1 << 7
 };
 
-class Scene {
+class Scene : public std::enable_shared_from_this<Scene> {
 public:
     Scene() = default;
     ~Scene() = default;

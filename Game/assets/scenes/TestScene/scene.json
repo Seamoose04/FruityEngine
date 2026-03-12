@@ -1,7 +1,6 @@
 {
     "objects": [
-        "objects/player.json",
-		"objects/cube.json",
-        "objects/postProcess.json"
+        "objects/importTest.json"
     ]
 }
+

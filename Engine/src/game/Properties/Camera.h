@@ -6,8 +6,8 @@
 
 class Camera : public Property {
 public:
-    void FromJSON(const json& data, std::weak_ptr<Scene> scene) override;
-	void OnCreate() override;
+    void FromJSON(const json& data) override;
+	void OnCreate(std::weak_ptr<Scene> scene) override;
 	void UpdateAspectRatio(int width, int height);
 	void UpdateView();
 	void UpdatePerspective();

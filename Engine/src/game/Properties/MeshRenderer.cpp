@@ -6,9 +6,7 @@
 #include "game/Properties/Camera.h"
 #include "graphics/Shader.h"
 
-void MeshRenderer::FromJSON(const json &data, std::weak_ptr<Scene> scene) {
-	_scene = scene;
-
+void MeshRenderer::FromJSON(const json &data) {
 	if (data.contains("mesh")) {
 		OBJLoader loader;
 		std::string meshPath = "assets/meshes/" + (std::string)data["mesh"];
@@ -29,7 +27,8 @@ void MeshRenderer::FromJSON(const json &data, std::weak_ptr<Scene> scene) {
 	}
 }
 
-void MeshRenderer::OnCreate() {
+void MeshRenderer::OnCreate(std::weak_ptr<Scene> scene) {
+	_scene = scene;
 	_transform.From(_parent);
 }
 

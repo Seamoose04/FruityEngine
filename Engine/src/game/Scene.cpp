@@ -29,7 +29,7 @@ std::shared_ptr<Scene> Scene::LoadFromFile(const std::string& path) {
         try {
             json objectJson = *static_cast<json*>(loader.Load(fullPath.string()));
             auto gameObject = std::make_shared<GameObject>();
-            gameObject->FromJSON(objectJson, scene);
+            gameObject->FromJSON(objectJson);
             scene->_objects.push_back(gameObject);
         }
         catch (const std::exception& e) {
@@ -68,8 +68,9 @@ void Scene::ClearFlag(SceneFlags flag) {
 }
 
 void Scene::Start() {
+	auto weakSelf = weak_from_this();
     for (auto& obj : _objects)
-        obj->OnCreate();
+        obj->OnCreate(weakSelf);
 }
 
 void Scene::Update(float deltaTime) {

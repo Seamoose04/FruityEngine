@@ -3,7 +3,7 @@
 #include "game/Scene.h"
 #include <iostream>
 
-void GameObject::FromJSON(const json& data, std::weak_ptr<Scene> scene) {
+void GameObject::FromJSON(const json& data) {
     for (auto& propData : data["properties"]) {
         std::string type = propData["type"];
         const json& payload = propData["data"];
@@ -17,12 +17,12 @@ void GameObject::FromJSON(const json& data, std::weak_ptr<Scene> scene) {
 		property->SetParent(shared_from_this());
         AddProperty(property);
 
-        property->FromJSON(payload, scene);
+        property->FromJSON(payload);
     }
 	if (data.contains("children")) {
 		for (auto& childData : data["children"]) {
 			auto child = std::make_shared<GameObject>();
-			child->FromJSON(childData, scene);
+			child->FromJSON(childData);
 			child->_parent = shared_from_this();
 			_children.push_back(std::move(child));
 		}
@@ -33,12 +33,12 @@ void GameObject::AddProperty(std::shared_ptr<Property> property) {
     _properties.push_back(property);
 }
 
-void GameObject::OnCreate() {
+void GameObject::OnCreate(std::weak_ptr<Scene> scene) {
     for (auto& prop : _properties) {
-        prop->OnCreate();
+        prop->OnCreate(scene);
     }
     for (auto& child : _children) {
-        child->OnCreate();
+        child->OnCreate(scene);
     }
 }
 

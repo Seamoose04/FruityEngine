@@ -5,7 +5,7 @@
 
 #include "graphics/Renderer.h"
 
-void PostProcessVolume::FromJSON(const json& data, std::weak_ptr<Scene> scene) {
+void PostProcessVolume::FromJSON(const json& data) {
     if (!data.contains("effects") || !data["effects"].is_array()) {
         std::cerr << "[PostProcessVolume] Missing 'effects' array in JSON" << std::endl;
         return;
@@ -14,7 +14,7 @@ void PostProcessVolume::FromJSON(const json& data, std::weak_ptr<Scene> scene) {
     _WireInputs(data["effects"]);
 }
 
-void PostProcessVolume::OnCreate() {
+void PostProcessVolume::OnCreate(std::weak_ptr<Scene> scene) {
     if (!_outputNode) {
         std::cerr << "[PostProcessVolume] No RenderToScreen node in graph" << std::endl;
         return;

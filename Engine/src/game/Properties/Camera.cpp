@@ -1,18 +1,20 @@
 #include "Camera.h"
-#include "glm/ext/matrix_clip_space.hpp"
-#include "glm/ext/matrix_transform.hpp"
+
 #include <glm/gtx/string_cast.hpp>
 #include <memory>
 
-void Camera::FromJSON(const json &data, std::weak_ptr<Scene> scene) {
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "game/Scene.h"
+
+void Camera::FromJSON(const json &data) {
 	_fov = data["fov"];
 	_near = data["near"];
 	_far = data["far"];
-
-	_scene = scene;
 }
 
-void Camera::OnCreate() {
+void Camera::OnCreate(std::weak_ptr<Scene> scene) {
+	_scene = scene;
 	_transform.From(_parent);
 
 	if (auto lockedScene = _scene.lock()) {

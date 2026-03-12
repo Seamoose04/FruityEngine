@@ -1,0 +1,11 @@
+{
+	"type": "GameObject",
+	"properties": [
+		{
+			"type": "DataReader",
+			"data": {
+				"$import": "emissive_replace.json"
+			}
+		}
+	]
+}

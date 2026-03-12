@@ -11,13 +11,13 @@ public:
 	GameObject() = default;
 	~GameObject() = default;
 
-	void OnCreate();
+	void OnCreate(std::weak_ptr<Scene> scene);
 	void Update(float dt);
 	void OnDestroy();
 	void HandleInput(const Window &window, float dt);
 	void Render(Renderer &renderer);
 
-	void FromJSON(const json &data, std::weak_ptr<Scene> scene);
+	void FromJSON(const json &data);
 	void AddProperty(std::shared_ptr<Property> property);
 
 	template <typename T>

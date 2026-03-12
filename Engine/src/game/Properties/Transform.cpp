@@ -2,7 +2,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-void Transform::FromJSON(const json &data, std::weak_ptr<Scene> scene) {
+void Transform::FromJSON(const json &data) {
 	if (data.contains("position")) {
 		position = glm::vec3(data["position"][0], data["position"][1],
 					   data["position"][2]);

@@ -1,15 +1,15 @@
 #include "game/Properties/Transform.h"
 #include "game/Property.h"
-#include <iostream>
 #include "game/PropertyRef.h"
+#include "game/Scene.h"
 
 class PlayerController : public Property {
 public:
-	void FromJSON(const json& data, std::weak_ptr<Scene> scene) override {
+	void FromJSON(const json& data) override {
 		_speed = data["speed"];
-		_scene = scene;
 	}
-	void OnCreate() override {
+	void OnCreate(std::weak_ptr<Scene> scene) override {
+		_scene = scene;
 		_transform.From(_parent);
 		if (auto lockedScene = _scene.lock()) {
 			lockedScene->SetFlag(SceneFlags::VNC);

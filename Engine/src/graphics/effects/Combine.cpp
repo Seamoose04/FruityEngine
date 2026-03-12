@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-static const std::string ENGINE_SHADER_PATH = "../../Engine/Shaders/";
+static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/";
 
 void CombineEffect::FromJSON(const json& data) {
     _method = _methodMap.strToEnum[data.value("method", "")];

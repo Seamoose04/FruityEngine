@@ -7,8 +7,8 @@
 
 class MeshRenderer : public Property {
 public:
-	void FromJSON(const json& data, std::weak_ptr<Scene> scene) override;
-	void OnCreate() override;
+	void FromJSON(const json& data) override;
+	void OnCreate(std::weak_ptr<Scene> scene) override;
   	void Render(Renderer &renderer) override;
 
 private:
