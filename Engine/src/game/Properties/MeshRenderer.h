@@ -4,6 +4,7 @@
 #include "game/Properties/Transform.h"
 #include "graphics/Mesh.h"
 #include "game/Scene.h"
+#include "graphics/Material.h"
 
 class MeshRenderer : public Property {
 public:
@@ -13,7 +14,7 @@ public:
 
 private:
 	Mesh _mesh;
-	Shader _shader;
+	std::shared_ptr<Material> _material;
 	PropertyRef<Transform> _transform;
 	std::weak_ptr<Scene> _scene;
 

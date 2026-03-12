@@ -24,5 +24,5 @@ private:
     std::vector<glm::vec3> vertices;
     std::vector<unsigned int> indices;
 
-    void SetupMesh();
+    void _SetupMesh();
 };

@@ -37,10 +37,9 @@ void Renderer::EndFrame() {
     }
 }
 
-void Renderer::DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4& modelMatrix, const Camera& camera) {
-    shader.Use();
+void Renderer::DrawMesh(const Mesh& mesh, std::shared_ptr<Shader> shader, const glm::mat4& modelMatrix, const Camera& camera) {
     glm::mat4 mvp = camera.GetProjection() * camera.GetView() * modelMatrix;
-    shader.SetMat4("u_MVP", mvp);
+    shader->SetMat4("u_MVP", mvp);
 
     mesh.Bind();
     glDrawElements(GL_TRIANGLES, mesh.GetIndexCount(), GL_UNSIGNED_INT, nullptr);

@@ -4,27 +4,16 @@
 #include "Transform.h"
 #include "core/FileLoaders/OBJLoader.h"
 #include "game/Properties/Camera.h"
-#include "graphics/Shader.h"
 
 void MeshRenderer::FromJSON(const json &data) {
-	if (data.contains("mesh")) {
-		OBJLoader loader;
-		std::string meshPath = "assets/meshes/" + (std::string)data["mesh"];
-		Mesh* meshPtr = static_cast<Mesh*>(loader.Load(meshPath));
-        _mesh = std::move(*meshPtr);
-		delete meshPtr;
-	} else {
-		_mesh = Mesh();
-	}
+	OBJLoader loader;
+	std::string meshPath = "assets/meshes/" + (std::string)data["mesh"];
+	Mesh* meshPtr = static_cast<Mesh*>(loader.Load(meshPath));
+	_mesh = std::move(*meshPtr);
+	delete meshPtr;
 
-	if (data.contains("shader")) {
-		json shaderData = data["shader"];
-		if (shaderData.contains("vertex") && shaderData.contains("fragment")) {
-			std::string vPath = "assets/shaders/" + (std::string)shaderData["vertex"];
-			std::string fPath = "assets/shaders/" + (std::string)shaderData["fragment"];
-			_shader.Load(vPath, fPath);
-		}
-	}
+	_material = Registry<Material>::Instance().Create(data["material"]["type"]);
+	_material->FromJSON(data["material"]);
 }
 
 void MeshRenderer::OnCreate(std::weak_ptr<Scene> scene) {
@@ -35,7 +24,8 @@ void MeshRenderer::OnCreate(std::weak_ptr<Scene> scene) {
 void MeshRenderer::Render(Renderer &renderer) {
 	if (auto lockedScene = _scene.lock()) {
 		Camera cam = lockedScene->GetCamera();
-		renderer.DrawMesh(_mesh, _shader, _transformToModelMat(), cam);
+		_material->Apply();
+		renderer.DrawMesh(_mesh, _material->GetShader(), _transformToModelMat(), cam);
 	}
 }
 

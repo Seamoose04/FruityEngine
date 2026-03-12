@@ -6,7 +6,7 @@
             "data": {
                 "effects": [
                     { "id": "scene", "type": "Scene" },
-                    { "id": "threshold", "type": "ThresholdEffect", "input": "scene", "threshold": 0.6, "knee": 0.3 },
+                    { "id": "threshold", "type": "ThresholdEffect", "input": "scene", "threshold": 1.0, "knee": 0.0 },
                     { "id": "blurred", "type": "BlurEffect", "input": "threshold", "size": 1.0, "passes": 3 },
                     { "id": "bloom", "type": "CombineEffect", "inputA": "scene", "inputB": "blurred", "method": "Add" },
                     { "id": "output", "type": "RenderToScreen", "input": "bloom" }

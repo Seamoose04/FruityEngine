@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <iostream>
 
-static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/";
+static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/fx/";
 
 void BlurEffect::FromJSON(const json& data) {
     _size = data.value("size", 1.0f);

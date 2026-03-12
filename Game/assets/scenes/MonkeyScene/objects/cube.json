@@ -4,7 +4,7 @@
 		{
 			"type": "Transform",
 			"data": {
-				"position": [0, 0, -2],
+				"position": [0, 0, -5],
 				"rotation": [0, 0, 0],
 				"scale": [1, 1, 1]
 			}
@@ -13,9 +13,10 @@
             "type": "MeshRenderer",
             "data": {
 				"mesh": "Monkey.obj",
-				"shader": {
-					"vertex": "basic.vert",
-					"fragment": "basic.frag"
+				"material": {
+					"type": "EmissiveMaterial",
+					"color": [1.0, 0.2, 0.2],
+					"intensity": 10.0
 				}
 			}
         },

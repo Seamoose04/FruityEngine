@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <iostream>
 
-static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/";
+static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/fx/";
 
 void RenderToScreenEffect::Init(int width, int height) {
     _width = width;

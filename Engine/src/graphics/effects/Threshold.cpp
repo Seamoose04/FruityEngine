@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/";
+static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/fx/";
 
 void ThresholdEffect::FromJSON(const json& data) {
     _threshold = data.value("threshold", 1.0f);

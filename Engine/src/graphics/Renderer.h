@@ -20,7 +20,7 @@ public:
     void SetClearColor(float r, float g, float b, float a);
     void Resize(int width, int height);
 
-    void DrawMesh(const Mesh& mesh, const Shader& shader, const glm::mat4& modelMatrix, const Camera& camera);
+    void DrawMesh(const Mesh& mesh, std::shared_ptr<Shader> shader, const glm::mat4& modelMatrix, const Camera& camera);
 
     void SetPostProcessGraph(SceneEffect* screenNode, RenderToScreenEffect* outputNode);
     void ClearPostProcessGraph();

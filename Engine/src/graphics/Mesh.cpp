@@ -1,10 +1,9 @@
 #include "Mesh.h"
-#include <iostream>
 
 Mesh::Mesh(const std::vector<glm::vec3>& verts, const std::vector<unsigned int>& inds)
     : vertices(verts), indices(inds)
 {
-	SetupMesh();
+	_SetupMesh();
 }
 
 Mesh::Mesh(Mesh&& other) noexcept {
@@ -38,7 +37,7 @@ Mesh::~Mesh() {
     if (vao) glDeleteVertexArrays(1, &vao);
 }
 
-void Mesh::SetupMesh() {
+void Mesh::_SetupMesh() {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
