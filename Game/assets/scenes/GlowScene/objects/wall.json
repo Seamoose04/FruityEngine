@@ -1,0 +1,18 @@
+{
+	"type": "GameObject",
+	"properties": {
+		"Transform": {
+			"position": [0, 0, -10],
+			"rotation": [0, 0, 0],
+			"scale": [10, 10, 1]
+		},
+		"MeshRenderer": {
+			"mesh": "cube.obj",
+			"material": {
+				"type": "EmissiveMaterial",
+				"color": [1.0, 0.2, 0.1],
+				"intensity": 3
+			}
+		}
+	}
+}

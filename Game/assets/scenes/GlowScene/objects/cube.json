@@ -1,0 +1,21 @@
+{
+	"$import": "cube.json",
+	"$override": {
+		"properties": {
+			"Transform": {
+				"!position": [0, 0, -5],
+				"!scale": [0.4, 0.4, 0.4]
+			},
+			"MeshRenderer": {
+				"material": {
+					"!color": [0.2, 0.8, 0.1]
+				}
+			},
+			"Rotator": {
+				"xRot": 20,
+				"yRot": 20
+			}
+		}
+	}
+}
+

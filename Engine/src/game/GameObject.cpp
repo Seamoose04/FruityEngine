@@ -4,20 +4,17 @@
 #include <iostream>
 
 void GameObject::FromJSON(const json& data) {
-    for (auto& propData : data["properties"]) {
-        std::string type = propData["type"];
-        const json& payload = propData["data"];
-
-        auto property = Registry<Property>::Instance().Create(type);
+    for (auto& [key, value] : data["properties"].items()) {
+        auto property = Registry<Property>::Instance().Create(key);
         if (!property) {
-            std::cerr << "Unknown property type: " << type << "\n";
+            std::cerr << "Unknown property type: " << key << "\n";
             continue;
         }
 
 		property->SetParent(shared_from_this());
         AddProperty(property);
 
-        property->FromJSON(payload);
+        property->FromJSON(value);
     }
 	if (data.contains("children")) {
 		for (auto& childData : data["children"]) {

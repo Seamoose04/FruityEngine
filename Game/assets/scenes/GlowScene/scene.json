@@ -1,0 +1,9 @@
+{
+    "objects": [
+        "objects/player.json",
+		"objects/wall.json",
+		"objects/cube.json",
+        "objects/postProcess.json"
+    ]
+}
+
