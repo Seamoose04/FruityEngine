@@ -2,11 +2,12 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <glad/glad.h>
+#include "graphics/Vertex.h"
 
 class Mesh {
 public:
     Mesh() = default;
-    Mesh(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices);
+    Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
     Mesh(const Mesh&) = delete;
     Mesh(Mesh&& other) noexcept;
     Mesh& operator=(const Mesh&) = delete;
@@ -21,7 +22,7 @@ private:
     unsigned int vao = 0;
     unsigned int vbo = 0;
     unsigned int ebo = 0;
-    std::vector<glm::vec3> vertices;
+    std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
 
     void _SetupMesh();

@@ -1,0 +1,8 @@
+{
+    "objects": [
+        "objects/Cube.json",
+        "objects/Cube.001.json",
+		"objects/camera.json",
+		"objects/postProcess.json"
+    ]
+}

@@ -20,6 +20,8 @@ public:
 	void FromJSON(const json &data);
 	void AddProperty(std::shared_ptr<Property> property);
 
+	const std::weak_ptr<GameObject>& GetParent() const;
+	const std::vector<std::shared_ptr<GameObject>>& GetChildren() const;
 	template <typename T>
 	T *GetProperty();
 

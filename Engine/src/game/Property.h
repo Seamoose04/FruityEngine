@@ -9,7 +9,7 @@ class GameObject;
 class Renderer;
 class Scene;
 
-class Property : public std::enable_shared_from_this<Property>{
+class Property : public std::enable_shared_from_this<Property> {
 public:
     Property() = default;
     virtual ~Property() = default;

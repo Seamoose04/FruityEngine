@@ -14,10 +14,12 @@ public:
         _transform.From(_parent);
     }
 	void Update(float dt) override {
-		glm::vec3 rot = _transform->rotation;
-		_transform->rotation.x = std::fmod(rot.x + _xRot * dt, 360.0f);
-		_transform->rotation.y = std::fmod(rot.y + _yRot * dt, 360.0f);
-		_transform->rotation.z = std::fmod(rot.z + _zRot * dt, 360.0f);
+		glm::vec3 rot = _transform->GetLocalRotation();
+		_transform->SetLocalRotation(glm::vec3(
+			std::fmod(rot.x + _xRot * dt, 360.0f),
+			std::fmod(rot.y + _yRot * dt, 360.0f),
+			std::fmod(rot.z + _zRot * dt, 360.0f)
+		));
 	}
 
 private:

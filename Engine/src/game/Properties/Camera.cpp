@@ -27,11 +27,12 @@ void Camera::OnCreate(std::weak_ptr<Scene> scene) {
 }
 
 void Camera::UpdatePerspective() {
-	_projection = glm::perspective(glm::radians(_fov), _aspectRatio, _near, _far);
+	float vFov = 2.0f * glm::atan(glm::tan(glm::radians(_fov) / 2.0f) / _aspectRatio);
+	_projection = glm::perspective(vFov, _aspectRatio, _near, _far);
 }
 
 void Camera::UpdateView() {
-	_view = glm::lookAt(_transform->position, _transform->position + _transform->Forward(), Transform::up);
+	_view = glm::lookAt(_transform->GetPosition(), _transform->GetPosition() + _transform->Forward(), Transform::up);
 }
 
 void Camera::UpdateAspectRatio(int width, int height) {

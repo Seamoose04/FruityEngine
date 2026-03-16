@@ -31,14 +31,14 @@ void MeshRenderer::Render(Renderer &renderer) {
 
 glm::mat4x4 MeshRenderer::_transformToModelMat() {
   glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, _transform->position);
-  model = glm::rotate(model, glm::radians(_transform->rotation.y),
+  model = glm::translate(model, _transform->GetPosition());
+  model = glm::rotate(model, glm::radians(_transform->GetRotation().y),
                       glm::vec3(0.0f, 1.0f, 0.0f));
-  model = glm::rotate(model, glm::radians(_transform->rotation.x),
+  model = glm::rotate(model, glm::radians(_transform->GetRotation().x),
                       glm::vec3(1.0f, 0.0f, 0.0f));
-  model = glm::rotate(model, glm::radians(_transform->rotation.z),
+  model = glm::rotate(model, glm::radians(_transform->GetRotation().z),
                       glm::vec3(0.0f, 0.0f, 1.0f));
-  model = glm::scale(model, _transform->scale);
+  model = glm::scale(model, _transform->GetScale());
   return model;
 }
 

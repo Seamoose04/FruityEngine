@@ -2,6 +2,7 @@
 #include "util/Registry.h"
 #include "game/Scene.h"
 #include <iostream>
+#include <memory>
 
 void GameObject::FromJSON(const json& data) {
     for (auto& [key, value] : data["properties"].items()) {
@@ -15,7 +16,7 @@ void GameObject::FromJSON(const json& data) {
         AddProperty(property);
 
         property->FromJSON(value);
-    }
+	}
 	if (data.contains("children")) {
 		for (auto& childData : data["children"]) {
 			auto child = std::make_shared<GameObject>();
@@ -73,4 +74,12 @@ void GameObject::OnDestroy() {
     for (auto& child : _children) {
         child->OnDestroy();
     }
+}
+
+const std::weak_ptr<GameObject>& GameObject::GetParent() const {
+	return _parent;
+}
+
+const std::vector<std::shared_ptr<GameObject>>& GameObject::GetChildren() const {
+	return _children;
 }

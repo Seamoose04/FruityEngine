@@ -1,0 +1,9 @@
+schema_version = "1.0.0"
+id = "blender_exporter"
+version = "0.2.0"
+name = "FruityEngine Exporter"
+tagline = "Exports scenes for FruityEngine"
+maintainer = "Seamus"
+type = "add-on"
+blender_version_min = "4.2.0"
+license = ["SPDX:MIT"]

@@ -1,0 +1,33 @@
+{
+    "type": "GameObject",
+    "properties": {
+        "Transform": {
+            "position": [
+                -1.2129977941513062,
+                4.589236259460449,
+                2.330275774002075
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "MeshRenderer": {
+            "mesh": "Cube.001.obj",
+            "material": {
+                "type": "FlatMaterial",
+                "color": [
+                    0.800000011920929,
+                    0.800000011920929,
+                    0.800000011920929
+                ]
+            }
+        }
+    }
+}

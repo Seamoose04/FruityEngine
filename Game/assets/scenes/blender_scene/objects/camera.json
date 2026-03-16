@@ -1,0 +1,17 @@
+{
+	"type": "GameObject",
+	"properties": {
+		"Transform": {
+			"position": [0, 0, 20],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1]
+		},
+		"Camera": {
+			"fov": 80,
+			"near": 0.1,
+			"far": 1000
+		}
+	}
+}
+
+

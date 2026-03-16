@@ -11,6 +11,7 @@ Renderer::Renderer(int width, int height)
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+	glFrontFace(GL_CCW);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 

@@ -1,0 +1,18 @@
+{
+    "type": "GameObject",
+    "properties": {
+        "PostProcessVolume": {
+            "effects": [
+                {
+                    "id": "scene",
+                    "type": "Scene"
+                },
+                {
+                    "id": "output",
+                    "type": "RenderToScreen",
+                    "input": "scene"
+                }
+            ]
+        }
+    }
+}
