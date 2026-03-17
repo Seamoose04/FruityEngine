@@ -40,6 +40,7 @@ void* OBJLoader::Load(const std::string& path) {
 		} else if (prefix == "vn") {
 			float x, y, z;
 			ss >> x >> y >> z;
+			tempNormals.emplace_back(x, y, z);
 		} else if (prefix == "f") {
 			std::string vertexStr;
 			while (ss >> vertexStr) {

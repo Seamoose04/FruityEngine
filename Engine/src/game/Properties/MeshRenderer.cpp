@@ -3,7 +3,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Transform.h"
 #include "core/FileLoaders/OBJLoader.h"
-#include "game/Properties/Camera.h"
 
 void MeshRenderer::FromJSON(const json &data) {
 	OBJLoader loader;
@@ -22,11 +21,7 @@ void MeshRenderer::OnCreate(std::weak_ptr<Scene> scene) {
 }
 
 void MeshRenderer::Render(Renderer &renderer) {
-	if (auto lockedScene = _scene.lock()) {
-		Camera cam = lockedScene->GetCamera();
-		_material->Apply();
-		renderer.DrawMesh(_mesh, _material->GetShader(), _transformToModelMat(), cam);
-	}
+	renderer.SubmitMesh(_mesh, _material, _transformToModelMat());
 }
 
 glm::mat4x4 MeshRenderer::_transformToModelMat() {

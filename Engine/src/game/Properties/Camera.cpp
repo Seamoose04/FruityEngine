@@ -26,6 +26,10 @@ void Camera::OnCreate(std::weak_ptr<Scene> scene) {
 	UpdateView();
 }
 
+void Camera::Render(Renderer& renderer) {
+	renderer.SetCamera(this, _transform->GetPosition());
+}
+
 void Camera::UpdatePerspective() {
 	float vFov = 2.0f * glm::atan(glm::tan(glm::radians(_fov) / 2.0f) / _aspectRatio);
 	_projection = glm::perspective(vFov, _aspectRatio, _near, _far);

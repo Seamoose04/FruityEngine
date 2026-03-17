@@ -15,18 +15,37 @@ Renderer::Renderer(int width, int height)
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
+	glGenBuffers(1, &_lightUBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, _lightUBO);
+
+	int bufferSize = MAX_POINT_LIGHTS * 32 + 32;
+	glBufferData(GL_UNIFORM_BUFFER, bufferSize, nullptr, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, _lightUBO);
+
     PostProcessEffect::InitQuad();
 
     std::cout << "Renderer initialized (" << width << "x" << height << ")\n";
 }
 
+Renderer::~Renderer() {
+	glDeleteBuffers(1, &_lightUBO);
+}
+
 void Renderer::BeginFrame() {
+	_camera = nullptr;
+	_renderQueue.clear();
+	_pointLights.clear();
+
     _hdrBuffer.Bind();
     glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::EndFrame() {
+	_FlushQueue();
+
     _hdrBuffer.Unbind();
 
     if (_postProcessOutput) {
@@ -38,12 +57,72 @@ void Renderer::EndFrame() {
     }
 }
 
-void Renderer::DrawMesh(const Mesh& mesh, std::shared_ptr<Shader> shader, const glm::mat4& modelMatrix, const Camera& camera) {
-    glm::mat4 mvp = camera.GetProjection() * camera.GetView() * modelMatrix;
-    shader->SetMat4("u_MVP", mvp);
+void Renderer::SetCamera(const Camera* camera, const glm::vec3& position) {
+	if (_camera != nullptr) {
+		std::cerr << "[Renderer] Error: SetCamera called more than once per frame. Only one camera is allowed." << std::endl;
+		return;
+	}
+	_camera = camera;
+	_cameraPos = position;
+}
 
-    mesh.Bind();
-    glDrawElements(GL_TRIANGLES, mesh.GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+void Renderer::SubmitMesh(const Mesh& mesh, std::shared_ptr<Material> material, const glm::mat4& modelMatrix) {
+	_renderQueue.push_back({ &mesh, material, modelMatrix });
+}
+
+void Renderer::SubmitPointLight(const PointLight& light) {
+	if ((int)_pointLights.size() >= MAX_POINT_LIGHTS) {
+        std::cerr << "[Renderer] Warning: MAX_POINT_LIGHTS (" << MAX_POINT_LIGHTS << ") exceeded. Light ignored.\n";
+        return;
+    }
+    _pointLights.push_back(&light);
+}
+
+void Renderer::SetAmbientLight(const AmbientLight& light) {
+	_ambientLight = light;
+}
+
+void Renderer::_UploadLightUBO() {
+	glBindBuffer(GL_UNIFORM_BUFFER, _lightUBO);
+
+	int count = (int)_pointLights.size();
+	for (int i = 0; i < count; i++) {
+		const PointLight* l = _pointLights[i];
+		int offset = i * 32;
+
+		glm::vec4 posAndRadius(l->position, l->radius);
+		glm::vec4 colorAndIntensity(l->color, l->intensity);
+
+		glBufferSubData(GL_UNIFORM_BUFFER, offset, 16, &posAndRadius);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset + 16, 16, &colorAndIntensity);
+	}
+
+	int ambientOffset = MAX_POINT_LIGHTS * 32;
+	glm::vec4 ambientData(_ambientLight.color, _ambientLight.intensity);
+	glBufferSubData(GL_UNIFORM_BUFFER, ambientOffset, 16, &ambientData);
+
+	glBufferSubData(GL_UNIFORM_BUFFER, ambientOffset + 16, 4, &count);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void Renderer::_FlushQueue() {
+	if (_camera == nullptr) {
+		std::cerr << "[Renderer] Error: No camera set this frame. Nothing will be drawn." << std::endl;
+		return;
+	}
+
+	_UploadLightUBO();
+
+	for (const RenderCommand& cmd : _renderQueue) {
+		glm::mat4 mvp = _camera->GetProjection() * _camera->GetView() * cmd.modelMatrix;
+		cmd.material->Apply();
+		cmd.material->GetShader()->SetMat4("u_MVP", mvp);
+		cmd.material->GetShader()->SetMat4("u_Model", cmd.modelMatrix);
+		cmd.material->GetShader()->SetVec3("u_CameraPos", _cameraPos);
+		cmd.mesh->Bind();
+		glDrawElements(GL_TRIANGLES, cmd.mesh->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+	}
 }
 
 void Renderer::SetPostProcessGraph(SceneEffect* sceneNode, RenderToScreenEffect* outputNode) {

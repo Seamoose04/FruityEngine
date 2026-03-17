@@ -21,14 +21,19 @@
         "MeshRenderer": {
             "mesh": "Cube.obj",
             "material": {
-                "type": "EmissiveMaterial",
+                "type": "LitMaterial",
                 "color": [
                     0.8,
                     0.8,
                     0.8
                 ],
-                "intensity": 2.0
+                "roughness": 0.0,
+				"metalness": 1.0
             }
-        }
+        },
+		"Rotator": {
+			"xRot": 11,
+			"yRot": 17
+		}
     }
 }

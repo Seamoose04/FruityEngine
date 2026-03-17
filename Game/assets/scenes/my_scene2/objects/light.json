@@ -1,0 +1,15 @@
+{
+	"type": "GameObject",
+	"properties": {
+		"Transform": {
+			"position": [3, 0, -10],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1]
+		},
+		"PointLightProperty": {
+			"color": [0.0, 0.0, 1.0],
+			"intensity": 4.0,
+			"radius": 8.0
+		}
+	}
+}

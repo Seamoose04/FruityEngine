@@ -2,6 +2,8 @@
     "objects": [
         "objects/Cube.json",
         "objects/Camera.json",
-        "objects/postprocess.json"
+        "objects/postprocess.json",
+		"objects/ambientlight.json",
+		"objects/light.json"
     ]
 }
