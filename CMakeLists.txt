@@ -7,4 +7,5 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Add subdirectories
 add_subdirectory(Engine)
+add_subdirectory(Editor)
 add_subdirectory(Game)
