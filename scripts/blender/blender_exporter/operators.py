@@ -2,7 +2,7 @@ import bpy
 import os
 import json
 
-from .export import build_object_json, build_chunk_json, build_camera_json
+from .export import build_object_json, build_chunk_json, build_camera_json, build_light_json
 
 
 def write_json(path: str, data) -> None:
@@ -57,6 +57,7 @@ class FRUITY_OT_export(bpy.types.Operator):
         # ------------------------------------------------------------------
         mesh_objects   = [o for o in context.scene.objects if o.type == "MESH"]
         camera_objects = [o for o in context.scene.objects if o.type == "CAMERA"]
+        light_objects = [o for o in context.scene.objects if o.type == "LIGHT"]
 
         # ------------------------------------------------------------------
         # Validate materials (all mesh objects, regardless of hierarchy)
@@ -150,6 +151,19 @@ class FRUITY_OT_export(bpy.types.Operator):
             write_json(cam_path, build_camera_json(camera_objects[0], precision=self.precision))
             scene_imports.append(f"objects/{cam_filename}")
             print(f"[FruityEngine] Exported camera: {cam_path}")
+
+        # ------------------------------------------------------------------
+        # Lights
+        # ------------------------------------------------------------------
+        for obj in light_objects:
+            if obj.data.type not in ("POINT", "SUN"):
+                print(f"[FruityEngine] Skipping unsupported light '{obj.name}' (type: {obj.data.type})")
+                continue
+            light_filename = f"{obj.name}.json"
+            light_path = os.path.join(dirs["objects"], light_filename)
+            write_json(light_path, build_light_json(obj, precision=self.precision))
+            scene_imports.append(f"objects/{light_filename}")
+            print(f"[FruityEngine] Exported light: {light_path}")
 
         # ------------------------------------------------------------------
         # Default post process stack

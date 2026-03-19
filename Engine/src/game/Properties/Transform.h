@@ -1,5 +1,6 @@
 #pragma once
 #include "game/Property.h"
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
@@ -44,17 +45,17 @@ public:
 
 private:
     glm::vec3 _localPosition{0.0f};
-    glm::vec3 _localRotation{0.0f};
+    glm::quat _localRotation = glm::identity<glm::quat>();
     glm::vec3 _localScale{1.0f};
 
-	glm::quat _cachedQuat;
+	glm::vec3 _cachedEuler;
 	glm::mat4 _cachedLocalMatrix;
 	glm::mat4 _cachedWorldMatrix;
 
 	bool _cacheDirty = true;
 	bool _updatedThisFrame;
 
-	void _UpdateQuaternion();
+	void _UpdateEuler();
 	void _UpdateLocalMatrix();
 	void _UpdateWorldMatrix(const glm::mat4& parentWorldMatrix);
 };

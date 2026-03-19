@@ -48,6 +48,7 @@ private:
     int _width, _height;
     glm::vec4 _clearColor;
     Framebuffer _hdrBuffer;
+	Framebuffer _msaaBuffer;
     RenderToScreenEffect* _postProcessOutput = nullptr;
 
 	const Camera* _camera = nullptr;

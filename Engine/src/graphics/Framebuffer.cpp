@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-Framebuffer::Framebuffer(int width, int height, GLenum colorFormat)
-    : _width(width), _height(height), _colorFormat(colorFormat)
+Framebuffer::Framebuffer(int width, int height, GLenum colorFormat, int samples)
+    : _width(width), _height(height), _colorFormat(colorFormat), _samples(samples)
 {
     Setup();
 }
@@ -14,7 +14,7 @@ Framebuffer::~Framebuffer() {
 
 Framebuffer::Framebuffer(Framebuffer&& other) noexcept
     : _fbo(other._fbo), _colorTexture(other._colorTexture), _depthRBO(other._depthRBO),
-      _width(other._width), _height(other._height), _colorFormat(other._colorFormat)
+      _width(other._width), _height(other._height), _colorFormat(other._colorFormat), _samples(other._samples)
 {
     other._fbo = 0;
     other._colorTexture = 0;
@@ -24,12 +24,13 @@ Framebuffer::Framebuffer(Framebuffer&& other) noexcept
 Framebuffer& Framebuffer::operator=(Framebuffer&& other) noexcept {
     if (this != &other) {
         Destroy();
-        _fbo          = other._fbo;
+        _fbo = other._fbo;
         _colorTexture = other._colorTexture;
-        _depthRBO     = other._depthRBO;
-        _width        = other._width;
-        _height       = other._height;
-        _colorFormat  = other._colorFormat;
+        _depthRBO = other._depthRBO;
+        _width = other._width;
+        _height = other._height;
+        _colorFormat = other._colorFormat;
+		_samples = other._samples;
         other._fbo = other._colorTexture = other._depthRBO = 0;
     }
     return *this;
@@ -60,34 +61,64 @@ bool Framebuffer::IsValid() const {
 }
 
 void Framebuffer::Setup() {
-    // Texture(color) - floats for HDR support (>1.0)
-    glGenTextures(1, &_colorTexture);
-    glBindTexture(GL_TEXTURE_2D, _colorTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, _colorFormat, _width, _height, 0, GL_RGBA, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // Clamp edges for blurs
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_2D, 0);
+	if (_samples > 1) {
+		// Multisampled color texture
+		glGenTextures(1, &_colorTexture);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _colorTexture);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, _samples, _colorFormat, _width, _height, GL_TRUE);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
-    // Depth - Renderbuffer since we never sample it
-    glGenRenderbuffers(1, &_depthRBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, _depthRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, _width, _height);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		// Multisamples depth depthRBO
+		glGenRenderbuffers(1, &_depthRBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, _depthRBO);
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, _samples, GL_DEPTH_COMPONENT24, _width, _height);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-    // Assemble FBO
-    glGenFramebuffers(1, &_fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _colorTexture, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRBO);
+		// Assemble
+		glGenFramebuffers(1, &_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, _colorTexture, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRBO);
+	} else {
+		// Texture(color) - floats for HDR support (>1.0)
+		glGenTextures(1, &_colorTexture);
+		glBindTexture(GL_TEXTURE_2D, _colorTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, _colorFormat, _width, _height, 0, GL_RGBA, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// Clamp edges for blurs
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
+		// Depth - Renderbuffer since we never sample it
+		glGenRenderbuffers(1, &_depthRBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, _depthRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, _width, _height);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+		// Assemble FBO
+		glGenFramebuffers(1, &_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _colorTexture, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRBO);
+	}
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "Framebuffer incomplete!" << std::endl;
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Framebuffer::ResolveTo(Framebuffer& target) const {
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, _fbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.GetFBO());
+	glBlitFramebuffer(0, 0, _width, _height, 0, 0, target._width, target._height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+unsigned int Framebuffer::GetFBO() const {
+	return _fbo;
 }
 
 void Framebuffer::Destroy() {

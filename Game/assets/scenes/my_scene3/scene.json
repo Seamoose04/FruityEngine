@@ -1,0 +1,10 @@
+{
+    "objects": [
+        "objects/Cube.json",
+        "objects/Camera.json",
+        "objects/Point.json",
+        "objects/Point.001.json",
+        "objects/Sun.json",
+        "objects/postprocess.json"
+    ]
+}

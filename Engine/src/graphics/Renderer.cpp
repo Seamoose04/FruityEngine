@@ -6,7 +6,8 @@
 Renderer::Renderer(int width, int height)
     : _width(width), _height(height),
     _clearColor(0.0f, 0.0f, 0.0f, 1.0f),
-    _hdrBuffer(width, height, GL_RGBA16F)
+    _hdrBuffer(width, height, GL_RGBA16F),
+	_msaaBuffer(width, height, GL_RGBA16F, 4)
 {
     glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
@@ -38,7 +39,7 @@ void Renderer::BeginFrame() {
 	_renderQueue.clear();
 	_pointLights.clear();
 
-    _hdrBuffer.Bind();
+    _msaaBuffer.Bind();
     glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -46,7 +47,8 @@ void Renderer::BeginFrame() {
 void Renderer::EndFrame() {
 	_FlushQueue();
 
-    _hdrBuffer.Unbind();
+    _msaaBuffer.Unbind();
+	_msaaBuffer.ResolveTo(_hdrBuffer);
 
     if (_postProcessOutput) {
         _postProcessOutput->Execute();
@@ -144,6 +146,7 @@ void Renderer::Resize(int w, int h) {
 	_width = w;
 	_height = h;
     _hdrBuffer.Resize(w, h);
+	_msaaBuffer.Resize(w, h);
 
     if (_postProcessOutput) {
         _postProcessOutput->Resize(w, h);

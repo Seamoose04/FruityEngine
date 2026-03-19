@@ -1,0 +1,75 @@
+{
+    "type": "GameObject",
+    "properties": {
+        "Transform": {
+            "position": [
+                0.0,
+                0.0,
+                -10.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "MeshRenderer": {
+            "mesh": "Cube.obj",
+            "material": {
+                "type": "LitMaterial",
+                "color": [
+                    0.8,
+                    0.0,
+                    0.002
+                ],
+				"roughness": 0.0,
+				"metalness": 1.0
+            }
+        },
+		"Rotator": {
+			"xRot": 0,
+			"yRot": 20
+		}
+    },
+    "children": [
+        {
+            "type": "GameObject",
+            "properties": {
+                "Transform": {
+                    "position": [
+                        0.0,
+                        1.377,
+                        -0.0
+                    ],
+                    "rotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "scale": [
+                        0.463,
+                        0.463,
+                        0.463
+                    ]
+                },
+                "MeshRenderer": {
+                    "mesh": "Cube.001.obj",
+                    "material": {
+                        "type": "EmissiveMaterial",
+                        "color": [
+                            0.386,
+                            0.799,
+                            0.06
+                        ],
+                        "intensity": 2.0
+                    }
+                }
+            }
+        }
+    ]
+}

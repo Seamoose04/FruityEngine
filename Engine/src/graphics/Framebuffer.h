@@ -5,7 +5,7 @@
 class Framebuffer {
 public:
     Framebuffer() = default;
-    Framebuffer(int width, int height, GLenum colorFormat = GL_RGBA16F);
+    Framebuffer(int width, int height, GLenum colorFormat = GL_RGBA16F, int samples = 1);
     ~Framebuffer();
 
     Framebuffer(const Framebuffer&) = delete;
@@ -16,6 +16,8 @@ public:
     void Bind() const;
     void Unbind() const;
     void Resize(int width, int height);
+	void ResolveTo(Framebuffer& target) const;
+	unsigned int GetFBO() const;
 
     unsigned int GetColorTexture() const;
     bool IsValid() const;
@@ -28,6 +30,7 @@ private:
     int _width = 0;
     int _height = 0;
     GLenum _colorFormat = GL_RGBA16F;
+	int _samples = 1;
 
     void Setup();
     void Destroy();

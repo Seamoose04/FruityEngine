@@ -31,7 +31,7 @@ void Transform::Update(float dt) {
 		}
 	}
 	if (_cacheDirty || (parent != nullptr && parent->GetProperty<Transform>()->_updatedThisFrame)) {
-		_UpdateQuaternion();
+		_UpdateEuler();
 		_UpdateLocalMatrix();
 		_UpdateWorldMatrix(parent != nullptr ? parent->GetProperty<Transform>()->GetWorldMatrix() : glm::mat4(1.0f));
 		_updatedThisFrame = true;
@@ -61,7 +61,8 @@ void Transform::Translate(const glm::vec3& delta) {
 
 void Transform::Rotate(const glm::vec3& degrees) {
 	_cacheDirty = true;
-	_localRotation += degrees;
+	glm::quat delta = glm::quat(glm::radians(degrees));
+	_localRotation = _localRotation * delta;
 }
 
 void Transform::ScaleBy(const glm::vec3& delta) {
@@ -74,11 +75,11 @@ const glm::vec3& Transform::GetLocalPosition() const {
 }
 
 const glm::vec3& Transform::GetLocalRotation() const {
-	return _localRotation;
+	return _cachedEuler;
 }
 
 const glm::quat& Transform::GetLocalRotationQuat() const {
-	return _cachedQuat;
+	return _localRotation;
 }
 
 const glm::vec3& Transform::GetLocalScale() const {
@@ -142,13 +143,13 @@ glm::vec3 Transform::LocalUp() const {
 	return glm::normalize(GetLocalRotationQuat() * glm::vec3(0, 1, 0));
 }
 
-void Transform::_UpdateQuaternion() {
-	_cachedQuat = glm::quat(glm::radians(GetLocalRotation()));
+void Transform::_UpdateEuler() {
+	_cachedEuler = glm::degrees(glm::eulerAngles(_localRotation));
 }
 
 void Transform::_UpdateLocalMatrix() {
 	glm::mat4 T = glm::translate(glm::mat4(1.0f), _localPosition);
-	glm::mat4 R = glm::toMat4(_cachedQuat);
+	glm::mat4 R = glm::toMat4(_localRotation);
 	glm::mat4 S = glm::scale(glm::mat4(1.0f), _localScale);
 	_cachedLocalMatrix = T * R * S;
 }

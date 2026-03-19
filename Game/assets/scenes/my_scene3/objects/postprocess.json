@@ -1,0 +1,33 @@
+{
+    "type": "GameObject",
+    "properties": {
+        "Transform": {
+            "position": [
+                0.0,
+                0.0,
+                -0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "PostProcessVolume": {
+            "effects": [
+				{ "id": "scene", "type": "Scene" },
+				{ "id": "threshold", "type": "ThresholdEffect", "input": "scene", "threshold": 0.8, "knee": 0.0 },
+				{ "id": "downsampled", "type": "DownsampleEffect", "input": "threshold", "scale": 0.5 },
+				{ "id": "blurred", "type": "BlurEffect", "input": "downsampled", "size": 1.0, "passes": 5 },
+				{ "id": "upsampled", "type": "UpsampleEffect", "input": "blurred" },
+				{ "id": "bloom", "type": "CombineEffect", "inputA": "scene", "inputB": "upsampled", "method": "Add" },
+				{ "id": "output", "type": "RenderToScreen", "input": "bloom" }
+            ]
+        }
+    }
+}
