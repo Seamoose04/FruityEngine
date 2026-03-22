@@ -10,12 +10,12 @@ bool JSONLoader::CanLoad(const std::string& path) const {
 }
 
 void* JSONLoader::Load(const std::string& path) {
-	json j = _LoadJSON(path);
+	json j = LoadJSON(path);
 	j = _ResolveImports(j, std::filesystem::path(path).parent_path());
     return new json(std::move(j));
 }
 
-json JSONLoader::_LoadJSON(const std::string& path) {
+json JSONLoader::LoadJSON(const std::string& path) {
     std::ifstream file(path);
     json j;
     file >> j;
@@ -60,7 +60,7 @@ json JSONLoader::_ResolveImports(const json& j, const std::filesystem::path& cur
 				} else {
 					resolvedPath = std::filesystem::weakly_canonical(std::filesystem::path("assets/chunks") / importPath);
 				}
-				json imported = _LoadJSON(resolvedPath.string());
+				json imported = LoadJSON(resolvedPath.string());
 				return _ResolveImports(imported, resolvedPath.parent_path(), importOverrides);
 			} else if (!importOverrides.empty()) {
 				std::cerr << "$override MUST have an accompanying import path." << std::endl;

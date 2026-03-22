@@ -2,6 +2,7 @@
 #include "core/Window.h"
 #include "graphics/Renderer.h"
 #include "game/Property.h"
+#include <string>
 #include <vector>
 #include <memory>
 
@@ -22,6 +23,7 @@ public:
 
 	const std::weak_ptr<GameObject>& GetParent() const;
 	const std::vector<std::shared_ptr<GameObject>>& GetChildren() const;
+	std::string GetName() const;
 	template <typename T>
 	T *GetProperty();
 
@@ -29,6 +31,7 @@ private:
 	std::vector<std::shared_ptr<Property>> _properties;
 	std::weak_ptr<GameObject> _parent;
 	std::vector<std::shared_ptr<GameObject>> _children;
+	std::string _name;
 };
 
 template <typename T>

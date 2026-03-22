@@ -8,9 +8,15 @@
 #include "game/Scene.h"
 
 void Camera::FromJSON(const json &data) {
-	_fov = data["fov"];
 	_near = data["near"];
 	_far = data["far"];
+
+	if (data["mode"] == "perspective") {
+		_mode = ProjectionMode::Perspective;
+		_fov = data["fov"];
+	} else if (data["mode"] == "orthographic") {
+		_mode = ProjectionMode::Orthographic;
+	}
 }
 
 void Camera::OnCreate(std::weak_ptr<Scene> scene) {
@@ -22,7 +28,7 @@ void Camera::OnCreate(std::weak_ptr<Scene> scene) {
 		lockedScene->SetCamera(std::dynamic_pointer_cast<Camera>(self));
 	}
 
-	UpdatePerspective();
+	UpdateProjection();
 	UpdateView();
 }
 
@@ -30,18 +36,28 @@ void Camera::Render(Renderer& renderer) {
 	renderer.SetCamera(this, _transform->GetPosition());
 }
 
-void Camera::UpdatePerspective() {
-	float vFov = 2.0f * glm::atan(glm::tan(glm::radians(_fov) / 2.0f) / _aspectRatio);
-	_projection = glm::perspective(vFov, _aspectRatio, _near, _far);
+void Camera::UpdateProjection() {
+	if (_mode == ProjectionMode::Perspective) {
+		float vFov = 2.0f * glm::atan(glm::tan(glm::radians(_fov) / 2.0f) / _aspectRatio);
+		_projection = glm::perspective(vFov, _aspectRatio, _near, _far);
+	} else if (_mode == ProjectionMode::Orthographic) {
+		_projection = glm::ortho(-(float)_screenWidth / 2, (float)_screenWidth / 2, -(float)_screenHeight / 2, (float)_screenHeight / 2, _near, _far);
+	}
 }
 
 void Camera::UpdateView() {
-	_view = glm::lookAt(_transform->GetPosition(), _transform->GetPosition() + _transform->Forward(), Transform::up);
+	if (_mode == ProjectionMode::Perspective) {
+		_view = glm::lookAt(_transform->GetPosition(), _transform->GetPosition() + _transform->Forward(), Transform::up);
+	} else if (_mode == ProjectionMode::Orthographic) {
+		_view = glm::identity<glm::mat4>();
+	}
 }
 
 void Camera::UpdateAspectRatio(int width, int height) {
+	_screenWidth = width;
+	_screenHeight = height;
 	_aspectRatio = (float)width / height;
-	UpdatePerspective();
+	UpdateProjection();
 }
 
 glm::mat4 Camera::GetView() const {

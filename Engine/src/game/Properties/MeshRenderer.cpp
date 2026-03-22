@@ -16,20 +16,11 @@ void MeshRenderer::FromJSON(const json &data) {
 }
 
 void MeshRenderer::OnCreate(std::weak_ptr<Scene> scene) {
-	_scene = scene;
 	_transform.From(_parent);
 }
 
 void MeshRenderer::Render(Renderer &renderer) {
-	renderer.SubmitMesh(_mesh, _material, _transformToModelMat());
-}
-
-glm::mat4x4 MeshRenderer::_transformToModelMat() {
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, _transform->GetPosition());
-	model *= glm::mat4_cast(_transform->GetRotationQuat());
-	model = glm::scale(model, _transform->GetScale());
-	return model;
+	renderer.SubmitMesh(_mesh, _material, _transform->GetWorldMatrix());
 }
 
 REGISTER_PROPERTY(MeshRenderer)

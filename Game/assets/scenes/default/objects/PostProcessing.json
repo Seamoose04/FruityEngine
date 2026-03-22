@@ -1,0 +1,29 @@
+{
+    "type": "GameObject",
+	"name": "PostProcess",
+    "properties": {
+        "Transform": {
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "PostProcessVolume": {
+            "effects": [
+				{ "id": "scene", "type": "Scene" },
+				{ "id": "output", "type": "RenderToScreen", "input": "scene" }
+            ]
+        }
+    }
+}

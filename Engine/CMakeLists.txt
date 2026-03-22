@@ -15,8 +15,8 @@ add_library(glm INTERFACE)
 target_include_directories(glm INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/glm)
 
 # stb_image
-add_library(stb INTERFACE)
-target_include_directories(stb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/external/stb)
+add_library(stb STATIC ${CMAKE_CURRENT_SOURCE_DIR}/external/stb/stb_image.cpp)
+target_include_directories(stb PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/external/stb)
 
 # JSON
 add_library(json INTERFACE)

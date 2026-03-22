@@ -6,6 +6,7 @@
 #include "graphics/Renderer.h"
 #include "core/Timer.h"
 #include "game/Scene.h"
+#include "util/Callback.h"
 
 class App {
 public:
@@ -14,8 +15,12 @@ public:
 
 	void Run();
 	void SetScene(std::shared_ptr<Scene> newScene);
+	Scene* GetCurrentScene() const;
 
 	void ProcessSceneFlags(Flags<SceneFlags> &flags);
+	Window& GetWindow();
+
+	Callback postRender;
 
 private:
 	Window _window;

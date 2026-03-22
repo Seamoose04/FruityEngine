@@ -59,6 +59,10 @@ Flags<SceneFlags> &Scene::GetFlags() {
 	return _flags;
 }
 
+const std::vector<std::shared_ptr<GameObject>>& Scene::GetRootObjects() const {
+	return _objects;
+}
+
 void Scene::SetFlag(SceneFlags flag) {
 	_flags.AddFlag(flag);
 }

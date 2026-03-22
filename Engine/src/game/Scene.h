@@ -35,6 +35,7 @@ public:
 	void SetFlag(SceneFlags flag);
 	void ClearFlag(SceneFlags flag);
 	Camera &GetCamera() const;
+	const std::vector<std::shared_ptr<GameObject>>& GetRootObjects() const;
 
 	std::string GetPath() const;
 

@@ -44,8 +44,8 @@ bool Shader::Load(const std::string& vertexPath, const std::string& fragmentPath
     glDeleteShader(fShader);
 
 	std::cout << "shader loaded" << std::endl;
-
     return true;
+
 }
 
 std::string Shader::LoadFile(const std::string& path) {
@@ -96,6 +96,10 @@ void Shader::SetFloat(const std::string& name, float value) const {
 
 void Shader::SetVec3(const std::string& name, const glm::vec3& value) const {
     glUniform3fv(glGetUniformLocation(id, name.c_str()), 1, &value[0]);
+}
+
+void Shader::SetVec4(const std::string& name, const glm::vec4& value) const {
+    glUniform4fv(glGetUniformLocation(id, name.c_str()), 1, &value[0]);
 }
 
 void Shader::SetMat4(const std::string& name, const glm::mat4& mat) const {

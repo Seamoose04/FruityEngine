@@ -35,6 +35,7 @@ void App::Run() {
             _renderer.BeginFrame();
             _currentScene->Render(_renderer);
             _renderer.EndFrame();
+			postRender.Call();
         }
         
         _window.SwapBuffers();
@@ -84,4 +85,12 @@ void App::ProcessSceneFlags(Flags<SceneFlags> &flags) {
 	if (flags.ProcessFlag(SceneFlags::Quit)) {
 		_running = false;
 	}
+}
+
+Window& App::GetWindow() {
+	return _window;
+}
+
+Scene* App::GetCurrentScene() const {
+	return _currentScene.get();
 }

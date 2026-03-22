@@ -10,8 +10,8 @@ public:
     bool CanLoad(const std::string& path) const override;
 
     void* Load(const std::string& path) override;
+	json LoadJSON(const std::string& path);
 
 private:
 	json _ResolveImports(const json& j, const std::filesystem::path& currentDir, const json& overrides = {});
-	json _LoadJSON(const std::string& path);
 };

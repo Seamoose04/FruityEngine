@@ -5,6 +5,7 @@
 #include <memory>
 
 void GameObject::FromJSON(const json& data) {
+	_name = data["name"];
     for (auto& [key, value] : data["properties"].items()) {
         auto property = Registry<Property>::Instance().Create(key);
         if (!property) {
@@ -82,4 +83,8 @@ const std::weak_ptr<GameObject>& GameObject::GetParent() const {
 
 const std::vector<std::shared_ptr<GameObject>>& GameObject::GetChildren() const {
 	return _children;
+}
+
+std::string GameObject::GetName() const {
+	return _name;
 }

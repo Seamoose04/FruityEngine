@@ -1,0 +1,24 @@
+{
+    "type": "GameObject",
+	"name": "fx",
+    "properties": {
+		"Transform": {
+			"position": [0, 0, 0],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1]
+		},
+        "PostProcessVolume": {
+            "effects": [
+                {
+                    "id": "scene",
+                    "type": "Scene"
+                },
+                {
+                    "id": "output",
+                    "type": "RenderToScreen",
+                    "input": "scene"
+                }
+            ]
+        }
+    }
+}

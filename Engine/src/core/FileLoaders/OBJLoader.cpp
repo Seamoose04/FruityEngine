@@ -63,6 +63,6 @@ void* OBJLoader::Load(const std::string& path) {
 		}
 	}
 
-	Mesh m(vertices, indices);
+	Mesh m(vertices, indices, Mesh::DrawHint::Static);
 	return new Mesh(std::move(m));
 }

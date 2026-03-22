@@ -16,7 +16,4 @@ private:
 	Mesh _mesh;
 	std::shared_ptr<Material> _material;
 	PropertyRef<Transform> _transform;
-	std::weak_ptr<Scene> _scene;
-
-	glm::mat4x4 _transformToModelMat();
 };
