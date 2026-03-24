@@ -1,7 +1,8 @@
 #include "Scene.h"
 #include <iostream>
+#include <memory>
 #include "core/FileLoaders/JSONLoader.h"
-#include "game/Properties/Camera.h"
+#include "game/Properties/Camera/Camera.h"
 
 using json = nlohmann::json;
 
@@ -49,6 +50,7 @@ Camera &Scene::GetCamera() const {
 		return *(Camera*)lockedCamera.get();
 	}
 	std::cerr << "No camera in scene" << std::endl;
+	std::abort();
 }
 
 std::string Scene::GetPath() const {
@@ -63,12 +65,20 @@ const std::vector<std::shared_ptr<GameObject>>& Scene::GetRootObjects() const {
 	return _objects;
 }
 
+Renderer& Scene::GetRenderer() {
+	return *_renderer;
+}
+
 void Scene::SetFlag(SceneFlags flag) {
 	_flags.AddFlag(flag);
 }
 
 void Scene::ClearFlag(SceneFlags flag) {
 	_flags.ClearFlag(flag);
+}
+
+void Scene::Init(int width, int height) {
+	_renderer = std::make_unique<Renderer>(width, height);
 }
 
 void Scene::Start() {
@@ -87,10 +97,20 @@ void Scene::HandleInput(const Window& window, float dt) {
         obj->HandleInput(window, dt);
 }
 
-void Scene::Render(Renderer &renderer) {
+void Scene::Render() {
+	_renderer->BeginFrame();
 	GetCamera().UpdateView();
-    for (auto& obj : _objects)
-        obj->Render(renderer);
+
+    for (auto& obj : _objects) {
+        obj->Render(GetRenderer());
+	}
+
+	_renderer->EndFrame();
+}
+
+void Scene::Resize(int width, int height) {
+	GetCamera().UpdateAspectRatio(width, height);
+	_renderer->Resize(width, height);
 }
 
 void Scene::Unload() {

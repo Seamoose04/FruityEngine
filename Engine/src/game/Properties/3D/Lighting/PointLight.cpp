@@ -8,7 +8,7 @@ void PointLightProperty::FromJSON(const json& j) {
 }
 
 void PointLightProperty::OnCreate(std::weak_ptr<Scene> scene) {
-	_transform.From(_parent);
+	_transform.From(_gameObject);
 }
 
 void PointLightProperty::Render(Renderer& renderer) {

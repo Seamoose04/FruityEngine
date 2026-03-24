@@ -8,6 +8,7 @@
 #include "graphics/Material.h"
 #include "lights/AmbientLight.h"
 #include "lights/PointLight.h"
+#include "util/Callback.h"
 
 class Camera;
 
@@ -40,6 +41,10 @@ public:
 
     int GetWidth() const;
     int GetHeight() const;
+	glm::vec2 GetSize() const;
+
+	Callback OnBeginFrame;
+	Callback OnEndFrame;
 
 private:
 	void _FlushQueue();

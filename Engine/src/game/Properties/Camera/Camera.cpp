@@ -21,7 +21,7 @@ void Camera::FromJSON(const json &data) {
 
 void Camera::OnCreate(std::weak_ptr<Scene> scene) {
 	_scene = scene;
-	_transform.From(_parent);
+	_transform.From(_gameObject);
 
 	if (auto lockedScene = _scene.lock()) {
 		auto self = shared_from_this();

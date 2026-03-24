@@ -1,6 +1,6 @@
 #include "game/Property.h"
 #include "game/PropertyRef.h"
-#include "game/Properties/Transform.h"
+#include "game/Properties/3D/Transform.h"
 
 class Rotator : public Property {
 public:
@@ -12,7 +12,7 @@ public:
 		);
 	}
     void OnCreate(std::weak_ptr<Scene> scene) override {
-        _transform.From(_parent);
+        _transform.From(_gameObject);
     }
 	void Update(float dt) override {
 		_transform->Rotate(_rotation * dt);

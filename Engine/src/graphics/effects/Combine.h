@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include "graphics/PostProcessEffect.h"
 #include "util/EnumMap.h"
 

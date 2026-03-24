@@ -25,7 +25,7 @@ void Transform::FromJSON(const json &data) {
 void Transform::Update(float dt) {
 	_updatedThisFrame = false;
 	GameObject* parent = nullptr;
-	if (auto lockedGameObject = GetParent().lock()) {
+	if (auto lockedGameObject = GetGameObject().lock()) {
 		if (auto lockedParent = lockedGameObject->GetParent().lock()) {
 			parent = lockedParent.get();
 		}

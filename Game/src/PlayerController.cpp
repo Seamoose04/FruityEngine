@@ -1,4 +1,4 @@
-#include "game/Properties/Transform.h"
+#include "game/Properties/3D/Transform.h"
 #include "game/Property.h"
 #include "game/PropertyRef.h"
 #include "game/Scene.h"
@@ -10,7 +10,7 @@ public:
 	}
 	void OnCreate(std::weak_ptr<Scene> scene) override {
 		_scene = scene;
-		_transform.From(_parent);
+		_transform.From(_gameObject);
 		if (auto lockedScene = _scene.lock()) {
 			lockedScene->SetFlag(SceneFlags::VNC);
 			lockedScene->SetFlag(SceneFlags::CursorHidden);

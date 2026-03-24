@@ -3,7 +3,6 @@
 #include <string>
 #include <memory>
 #include "core/Window.h"
-#include "graphics/Renderer.h"
 #include "core/Timer.h"
 #include "game/Scene.h"
 #include "util/Callback.h"
@@ -24,7 +23,6 @@ public:
 
 private:
 	Window _window;
-	Renderer _renderer;
 	Timer _timer;
 	std::shared_ptr<Scene> _currentScene;
 	bool _running = true;

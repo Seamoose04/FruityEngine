@@ -25,21 +25,26 @@ public:
 
     static std::shared_ptr<Scene> LoadFromFile(const std::string& path);
     
+	void Init(int width, int height);
     void Start();
     void Update(float dt);
     void Unload();
     void HandleInput(const Window& window, float dt);
-    void Render(Renderer& renderer);
+    void Render();
+	void Resize(int width, int height);
+
 	void SetCamera(std::weak_ptr<Camera> camera);
 	Flags<SceneFlags> &GetFlags();
 	void SetFlag(SceneFlags flag);
 	void ClearFlag(SceneFlags flag);
 	Camera &GetCamera() const;
 	const std::vector<std::shared_ptr<GameObject>>& GetRootObjects() const;
+	Renderer& GetRenderer();
 
 	std::string GetPath() const;
 
 private:
+	std::unique_ptr<Renderer> _renderer;
 	std::weak_ptr<Camera> _camera;
     std::vector<std::shared_ptr<GameObject>> _objects;
     std::string _path;

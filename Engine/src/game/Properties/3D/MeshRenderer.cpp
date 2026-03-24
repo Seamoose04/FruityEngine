@@ -16,7 +16,7 @@ void MeshRenderer::FromJSON(const json &data) {
 }
 
 void MeshRenderer::OnCreate(std::weak_ptr<Scene> scene) {
-	_transform.From(_parent);
+	_transform.From(_gameObject);
 }
 
 void MeshRenderer::Render(Renderer &renderer) {

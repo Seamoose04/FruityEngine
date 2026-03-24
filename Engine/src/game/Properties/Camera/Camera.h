@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "game/Properties/Transform.h"
+#include "game/Properties/3D/Transform.h"
 #include "game/PropertyRef.h"
 #include "game/Property.h"
 

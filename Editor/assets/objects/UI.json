@@ -1,0 +1,23 @@
+{
+	"type": "GameObject",
+	"name": "UIRoot",
+	"properties": {
+		"UICanvas": { "_placeholder": true }
+	},
+	"children": [
+		{
+			"name": "TestPanel",
+			"properties": {
+				"UILayout": {
+					"width": { "mode": "Percent", "value": 50 },
+					"height": { "mode": "Percent", "value": 50 }
+				},
+				"UIPanel": {
+					"color": [1, 0, 0, 1],
+					"flow": "Vertical",
+					"gap": 0
+				}
+			}
+		}
+	]
+}

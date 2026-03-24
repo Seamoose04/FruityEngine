@@ -2,17 +2,15 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "game/Properties/Camera.h"
 #include "game/Scene.h"
 
 App::App(int width, int height, const std::string& title)
-    : _window(width, height, title), _renderer(width, height)
+    : _window(width, height, title)
 {
     _window.SetVSync(true);
 
 	_window.size.OnChange([this](glm::vec2 size) {
-		_renderer.Resize(size.x, size.y);
-		_currentScene->GetCamera().UpdateAspectRatio(size.x, size.y);
+		_currentScene->Resize(size.x, size.y);
 	});
     std::cout << "App initialized successfully.\n";
 }
@@ -32,9 +30,7 @@ void App::Run() {
             _currentScene->HandleInput(_window, dt);
             _currentScene->Update(dt);
 
-            _renderer.BeginFrame();
-            _currentScene->Render(_renderer);
-            _renderer.EndFrame();
+            _currentScene->Render();
 			postRender.Call();
         }
         
@@ -44,11 +40,16 @@ void App::Run() {
 }
 
 void App::SetScene(std::shared_ptr<Scene> newScene) {
-    if (_currentScene) _currentScene->Unload();
+    if (_currentScene) {
+		_currentScene->Unload();
+	}
     _currentScene = std::move(newScene);
-	std::cout << "starting scene" << std::endl;
-    if (_currentScene) _currentScene->Start();
-	std::cout << "scene started" << std::endl;
+	if (_currentScene) {
+		std::cout << "starting scene" << std::endl;
+		_currentScene->Init(_window.size->x, _window.size->y);
+    	_currentScene->Start();
+		std::cout << "scene started" << std::endl;
+	}
 }
 
 void App::ProcessSceneFlags(Flags<SceneFlags> &flags) {

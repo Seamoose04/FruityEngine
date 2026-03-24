@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include <glad/glad.h>
 #include <iostream>
-#include "game/Properties/Camera.h"
+#include "game/Properties/Camera/Camera.h"
 
 Renderer::Renderer(int width, int height)
     : _width(width), _height(height),
@@ -9,15 +9,6 @@ Renderer::Renderer(int width, int height)
     _hdrBuffer(width, height, GL_RGBA16F),
 	_msaaBuffer(width, height, GL_RGBA16F, 4)
 {
-    glViewport(0, 0, width, height);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-	glFrontFace(GL_CCW);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glGenBuffers(1, &_lightUBO);
 	glBindBuffer(GL_UNIFORM_BUFFER, _lightUBO);
 
@@ -37,6 +28,7 @@ Renderer::~Renderer() {
 }
 
 void Renderer::BeginFrame() {
+	OnBeginFrame.Call();
 	_camera = nullptr;
 	_renderQueue.clear();
 	_pointLights.clear();
@@ -47,6 +39,7 @@ void Renderer::BeginFrame() {
 }
 
 void Renderer::EndFrame() {
+	OnEndFrame.Call();
 	_FlushQueue();
 
     _msaaBuffer.Unbind();
@@ -161,4 +154,8 @@ int Renderer::GetWidth() const {
 
 int Renderer::GetHeight() const {
     return _height;
+}
+
+glm::vec2 Renderer::GetSize() const {
+	return { _width, _height };
 }

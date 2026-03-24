@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/Properties/Transform.h"
+#include "game/Properties/3D/Transform.h"
 #include "game/Property.h"
 #include "game/PropertyRef.h"
 #include "graphics/lights/PointLight.h"

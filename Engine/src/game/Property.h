@@ -19,15 +19,15 @@ public:
     virtual void OnDestroy() {}
     virtual void HandleInput(const Window& window, float dt) {}
     virtual void Render(Renderer& renderer) {}
-	void SetParent(std::weak_ptr<GameObject> parent) {
-		_parent = parent;
+	void SetGameObject(std::weak_ptr<GameObject> gameObject) {
+		_gameObject = gameObject;
 	}
-	std::weak_ptr<GameObject> GetParent() {
-		return _parent;
+	std::weak_ptr<GameObject> GetGameObject() {
+		return _gameObject;
 	}
 
 protected:
-    std::weak_ptr<GameObject> _parent;
+    std::weak_ptr<GameObject> _gameObject;
 };
 
 #define REGISTER_PROPERTY(DerivedType) REGISTER_TYPE(Property, DerivedType)

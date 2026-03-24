@@ -20,9 +20,7 @@ void PostProcessVolume::OnCreate(std::weak_ptr<Scene> scene) {
         return;
     }
 
-    if (auto parent = _parent.lock()) {
-        _registered = false;
-    }
+	_registered = false;
 }
 
 void PostProcessVolume::Render(Renderer& renderer) {

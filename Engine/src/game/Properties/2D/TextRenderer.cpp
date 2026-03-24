@@ -12,7 +12,7 @@ void TextRenderer::FromJSON(const json& j) {
 }
 
 void TextRenderer::OnCreate(std::weak_ptr<Scene> scene) {
-	_transform.From(_parent);
+	_transform.From(_gameObject);
 	_font = AssetCache<Font>::Instance().Get(_fontPath);
 	_material->Init();
 	_material->SetAtlas(&_font->GetAtlasTexture());

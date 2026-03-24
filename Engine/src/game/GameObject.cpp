@@ -13,7 +13,7 @@ void GameObject::FromJSON(const json& data) {
             continue;
         }
 
-		property->SetParent(shared_from_this());
+		property->SetGameObject(shared_from_this());
         AddProperty(property);
 
         property->FromJSON(value);
