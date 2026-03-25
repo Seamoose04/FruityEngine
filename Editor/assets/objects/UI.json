@@ -9,15 +9,33 @@
 			"name": "TestPanel",
 			"properties": {
 				"UILayout": {
-					"width": { "mode": "Percent", "value": 50 },
-					"height": { "mode": "Percent", "value": 50 }
+					"width": { "mode": "Percent", "value": 100 },
+					"height": { "mode": "Percent", "value": 100 }
 				},
 				"UIPanel": {
 					"color": [1, 0, 0, 1],
 					"flow": "Vertical",
 					"gap": 0
 				}
-			}
+			},
+			"children": [
+				{
+					"name": "TestLabel",
+					"properties": {
+						"UILayout": {
+							"width": { "mode": "Auto" },
+							"height": { "mode": "Auto" }
+						},
+						"UILabel": {
+							"color": [1, 1, 1, 1],
+							"text": "Hello",
+							"font": "assets/textures/fonts/atlas",
+							"fontSize": 36,
+							"hAlign": "Center"
+						}
+					}
+				}
+			]
 		}
 	]
 }

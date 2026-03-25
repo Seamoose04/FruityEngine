@@ -20,6 +20,7 @@ public:
 	
 	const Glyph& GetGlyph(char c) const;
 	Texture& GetAtlasTexture();
+	glm::vec2 MeasureText(const std::string& text, float fontSize) const;
 	
 	static std::shared_ptr<Font> Load(const std::string& path);
 

@@ -68,6 +68,15 @@ void GameObject::Render(Renderer& renderer) {
     }
 }
 
+void GameObject::OnResize(int width, int height) {
+	for (auto& prop : _properties) {
+		prop->OnResize(width, height);
+	}
+	for (auto& child : _children) {
+		child->OnResize(width, height);
+	}
+}
+
 void GameObject::OnDestroy() {
     for (auto& prop : _properties) {
         prop->OnDestroy();

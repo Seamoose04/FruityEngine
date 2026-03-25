@@ -1,6 +1,5 @@
 #pragma once
 
-#include "glm/glm.hpp"
 #include "Mesh.h"
 #include "Framebuffer.h"
 #include "effects/Scene.h"
@@ -16,6 +15,8 @@ struct RenderCommand {
 	const Mesh* mesh;
 	std::shared_ptr<Material> material;
 	glm::mat4 modelMatrix;
+	std::function<void()> preDraw;
+	std::function<void()> postDraw;
 };
 
 class Renderer {
@@ -32,7 +33,10 @@ public:
     void Resize(int width, int height);
 
 	void SetCamera(const Camera* camera, const glm::vec3& position);
-	void SubmitMesh(const Mesh& mesh, std::shared_ptr<Material> material, const glm::mat4& modelMatrix);
+	void SubmitMesh(const Mesh& mesh, std::shared_ptr<Material> material, const glm::mat4& modelMatrix,
+		std::function<void()> preDraw = nullptr, 
+		std::function<void()> postDraw = nullptr
+	);
 	void SubmitPointLight(const PointLight& light);
 	void SetAmbientLight(const AmbientLight& light);
 

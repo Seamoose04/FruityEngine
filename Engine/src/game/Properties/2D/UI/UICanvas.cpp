@@ -24,6 +24,11 @@ void UICanvas::Render(Renderer& renderer) {
 	}
 }
 
+void UICanvas::OnResize(int width, int height) {
+	_screenSize = glm::vec2(width, height);
+	MarkDirty();
+}
+
 void UICanvas::RegisterWidget(UIWidget* widget) {
 	_widgets.push_back(widget);
 	MarkDirty();

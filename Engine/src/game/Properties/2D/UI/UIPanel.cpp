@@ -28,34 +28,12 @@ void UIPanel::OnCreate(std::weak_ptr<Scene> scene) {
 	_BuildMesh();
 }
 
-float UIPanel::ResolveAxis(Size size, float available) {
-	switch (size.mode) {
-		case Size::Mode::Pixels: return size.value;
-		case Size::Mode::Percent: return available * (size.value / 100.0f);
-		case Size::Mode::Auto: return available;
-	}
-}
-
-void UIPanel::Arrange(Rect availableRect) {
-	const Sides& margin = _layout->GetMargin();
-	Rect margined = {
-		availableRect.x + margin.left,
-		availableRect.y + margin.top,
-		availableRect.width - margin.left - margin.right,
-		availableRect.height - margin.top - margin.bottom
-	};
-
-	float w = ResolveAxis(_layout->GetWidth(), margined.width);
-	float h = ResolveAxis(_layout->GetHeight(), margined.height);
-
-	Rect& computedRect = _layout->GetComputedRect();
-	computedRect = { margined.x, margined.y, w, h };
-	
+void UIPanel::_Arrange(Rect availableRect) {
 	Rect inner = {
-		computedRect.x + _layout->GetPadding().left,
-		computedRect.y + _layout->GetPadding().top,
-		computedRect.width - _layout->GetPadding().left - _layout->GetPadding().right,
-		computedRect.height - _layout->GetPadding().top - _layout->GetPadding().bottom
+		availableRect.x + _layout->GetPadding().left,
+		availableRect.y + _layout->GetPadding().top,
+		availableRect.width - _layout->GetPadding().left - _layout->GetPadding().right,
+		availableRect.height - _layout->GetPadding().top - _layout->GetPadding().bottom
 	};
 
 	switch (_flow) {
@@ -105,7 +83,13 @@ void UIPanel::_BuildMesh() {
 }
 
 void UIPanel::Draw(Renderer& renderer) {
-	renderer.SubmitMesh(_mesh, _material, glm::mat4(1.0f));
+	renderer.SubmitMesh(_mesh, _material, glm::mat4(1.0f),
+		[]() { glDisable(GL_DEPTH_TEST); },
+		[]() { glEnable(GL_DEPTH_TEST); }
+	);
+	for (auto& child : _children) {
+        child->Draw(renderer);
+    }
 }
 
 REGISTER_PROPERTY(UIPanel)

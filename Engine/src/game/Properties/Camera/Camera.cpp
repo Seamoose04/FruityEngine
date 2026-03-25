@@ -53,7 +53,7 @@ void Camera::UpdateView() {
 	}
 }
 
-void Camera::UpdateAspectRatio(int width, int height) {
+void Camera::OnResize(int width, int height) {
 	_screenWidth = width;
 	_screenHeight = height;
 	_aspectRatio = (float)width / height;

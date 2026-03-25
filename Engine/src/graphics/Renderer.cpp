@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "game/Properties/Camera/Camera.h"
+#include <glm/glm.hpp>
 
 Renderer::Renderer(int width, int height)
     : _width(width), _height(height),
@@ -63,8 +64,8 @@ void Renderer::SetCamera(const Camera* camera, const glm::vec3& position) {
 	_cameraPos = position;
 }
 
-void Renderer::SubmitMesh(const Mesh& mesh, std::shared_ptr<Material> material, const glm::mat4& modelMatrix) {
-	_renderQueue.push_back({ &mesh, material, modelMatrix });
+void Renderer::SubmitMesh(const Mesh& mesh, std::shared_ptr<Material> material, const glm::mat4& modelMatrix, std::function<void()> preDraw, std::function<void()> postDraw) {
+	_renderQueue.push_back({ &mesh, material, modelMatrix, preDraw, postDraw });
 }
 
 void Renderer::SubmitPointLight(const PointLight& light) {
@@ -112,6 +113,9 @@ void Renderer::_FlushQueue() {
 	_UploadLightUBO();
 
 	for (const RenderCommand& cmd : _renderQueue) {
+		if (cmd.preDraw != nullptr) {
+			cmd.preDraw();
+		}
 		glm::mat4 mvp = _camera->GetProjection() * _camera->GetView() * cmd.modelMatrix;
 		cmd.material->Apply();
 		cmd.material->GetShader()->SetMat4("u_MVP", mvp);
@@ -119,6 +123,9 @@ void Renderer::_FlushQueue() {
 		cmd.material->GetShader()->SetVec3("u_CameraPos", _cameraPos);
 		cmd.mesh->Bind();
 		glDrawElements(GL_TRIANGLES, cmd.mesh->GetIndexCount(), GL_UNSIGNED_INT, nullptr);
+		if (cmd.postDraw != nullptr) {
+			cmd.postDraw();
+		}
 	}
 }
 

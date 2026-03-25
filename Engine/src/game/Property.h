@@ -19,6 +19,7 @@ public:
     virtual void OnDestroy() {}
     virtual void HandleInput(const Window& window, float dt) {}
     virtual void Render(Renderer& renderer) {}
+	virtual void OnResize(int width, int height) {}
 	void SetGameObject(std::weak_ptr<GameObject> gameObject) {
 		_gameObject = gameObject;
 	}

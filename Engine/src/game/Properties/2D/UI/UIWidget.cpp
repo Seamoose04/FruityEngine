@@ -36,3 +36,30 @@ int UIWidget::GetZIndex() const {
 void UIWidget::AddChild(const std::shared_ptr<UIWidget> child) {
 	_children.push_back(child);
 }
+
+void UIWidget::Arrange(Rect availableRect) {
+	const Sides& margin = _layout->GetMargin();
+	Rect margined = {
+		availableRect.x + margin.left,
+		availableRect.y + margin.top,
+		availableRect.width - margin.left - margin.right,
+		availableRect.height - margin.top - margin.bottom
+	};
+	glm::vec2 measured = _MeasureContent();
+	float w = _ResolveAxis(_layout->GetWidth(), margined.width, measured.x);
+	float h = _ResolveAxis(_layout->GetHeight(), margined.height, measured.y);
+	_layout->GetComputedRect() = { margined.x, margined.y, w, h };
+	_Arrange(availableRect);
+}
+
+glm::vec2 UIWidget::_MeasureContent() {
+	return glm::vec2({ 0, 0 });
+}
+
+float UIWidget::_ResolveAxis(Size size, float available, float measured) {
+	switch (size.mode) {
+		case Size::Mode::Pixels: return size.value;
+		case Size::Mode::Percent: return available * (size.value / 100.0f);
+		case Size::Mode::Auto: return measured;
+	}
+}

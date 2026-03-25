@@ -109,7 +109,9 @@ void Scene::Render() {
 }
 
 void Scene::Resize(int width, int height) {
-	GetCamera().UpdateAspectRatio(width, height);
+	for (auto& obj : _objects) {
+		obj->OnResize(width, height);
+	}
 	_renderer->Resize(width, height);
 }
 

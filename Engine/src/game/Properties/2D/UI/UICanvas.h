@@ -11,6 +11,7 @@ public:
 	void OnCreate(std::weak_ptr<Scene> scene) override;
 	void Update(float dt) override;
 	void Render(Renderer& renderer) override;
+	void OnResize(int width, int height) override;
 	void RegisterWidget(UIWidget* widget);
 	void MarkDirty();
 

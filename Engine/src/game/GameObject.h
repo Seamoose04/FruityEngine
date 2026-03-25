@@ -15,6 +15,7 @@ public:
 	void OnCreate(std::weak_ptr<Scene> scene);
 	void Update(float dt);
 	void OnDestroy();
+	void OnResize(int width, int height);
 	void HandleInput(const Window &window, float dt);
 	void Render(Renderer &renderer);
 

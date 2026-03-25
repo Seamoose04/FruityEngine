@@ -58,6 +58,21 @@ Texture& Font::GetAtlasTexture() {
 	return _atlas;
 }
 
+glm::vec2 Font::MeasureText(const std::string& text, float fontSize) const {
+	float cursor = 0.0f;
+
+	for (char c : text) {
+		const Font::Glyph& g = GetGlyph(c);
+		if (!g.hasGeometry) {
+			cursor += g.advance * fontSize;
+			continue;
+		}
+		cursor += g.advance * fontSize;
+	}
+
+	return glm::vec2({ cursor, fontSize });
+}
+
 const Font::Glyph& Font::GetGlyph(char c) const {
 	auto it = _glyphs.find((uint32_t)c);
 	if (it == _glyphs.end()) {
