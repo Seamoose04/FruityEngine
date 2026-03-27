@@ -8,7 +8,7 @@ class UIPanel : public UIWidget {
 public:
 	void FromJSON(const json &j) override;
 	void OnCreate(std::weak_ptr<Scene> scene) override;
-	void _Arrange(Rect availableRect) override;
+	void _Arrange() override;
 	void Draw(Renderer &renderer) override;
 
 private:

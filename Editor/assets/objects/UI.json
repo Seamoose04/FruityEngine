@@ -34,6 +34,32 @@
 							"hAlign": "Center"
 						}
 					}
+				},
+				{
+					"name": "TestButton",
+					"properties": {
+						"UILayout": {
+							"width": { "mode": "Pixels", "value": 200 },
+							"height": { "mode": "Pixels", "value": 60 }
+						},
+						"UIButton": {
+							"onClick": "test/message"
+						}
+					},
+					"children": [
+						{
+							"name": "bg",
+							"properties": {
+								"UIPanel": {
+									"color": [0, 0, 1, 1]
+								},
+								"UILayout": {
+									"width": { "mode": "Percent", "value": 100 },
+									"height": { "mode": "Percent", "value": 100 }
+								}
+							}
+						}
+					]
 				}
 			]
 		}

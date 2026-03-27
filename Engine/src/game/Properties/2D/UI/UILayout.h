@@ -11,6 +11,7 @@ public:
 	const Sides& GetMargin() const;
 	const Sides& GetPadding() const;
 	Align GetAlignSelf() const;
+	const Rect& GetComputedRect() const;
 	Rect& GetComputedRect();
 	static Size Pixels(float v) { return { Size::Mode::Pixels, v }; }
 	static Size Percent(float v) { return { Size::Mode::Pixels, v }; }

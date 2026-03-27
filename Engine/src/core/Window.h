@@ -1,7 +1,6 @@
 #pragma once
 
 #include "util/Flags.h"
-#include "util/Initialized.h"
 #include "util/Observable.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -20,7 +19,7 @@ public:
 	~Window();
 
 	bool ShouldClose() const;
-	void PollEvents() const;
+	void PollEvents();
 	void SwapBuffers() const;
 	void SetVSync(bool enabled);
 	void SetTitle(const std::string &title);
@@ -30,23 +29,19 @@ public:
 	void ShowCursor();
 	void LockCursor();
 	void DisableCursor();
-	void DisableCursorVNC();
 	void SetMouseRaw(bool raw);
 
 	GLFWwindow *GetHandle() const { return _handle; }
+	glm::vec2 GetMousePos() const;
 
 	bool IsKeyPressed(int key) const;
-	glm::vec2 GetMousePos() const;
-	void SetMousePos(glm::vec2 pos);
-	void ResetMousePos();
+	bool IsMouseButtonPressed(int button) const;
 
 	Observable<glm::vec2> size;
-	Observable<glm::vec2> center;
 
 private:
 	GLFWwindow *_handle = nullptr;
-	Initialized<glm::vec2> _lastCursorPos;
+	glm::vec2 _mousePos = {0, 0};
 	
-	glm::vec2 _cursorPos{0};
 	Flags<WindowFlags> _flags;
 };

@@ -56,11 +56,6 @@ void App::ProcessSceneFlags(Flags<SceneFlags> &flags) {
 	if (flags.ProcessFlag(SceneFlags::CursorNormal)) {
 		_window.ShowCursor();
 	}
-	if (flags.CheckFlag(SceneFlags::CursorHidden) && flags.CheckFlag(SceneFlags::CursorLocked) && flags.CheckFlag(SceneFlags::VNC)) {
-		flags.ClearFlag(SceneFlags::CursorHidden);
-		flags.ClearFlag(SceneFlags::CursorLocked);
-		_window.DisableCursorVNC();
-	}
 	if (flags.CheckFlag(SceneFlags::CursorHidden) && flags.CheckFlag(SceneFlags::CursorLocked)) {
 		flags.ClearFlag(SceneFlags::CursorHidden);
 		flags.ClearFlag(SceneFlags::CursorLocked);
@@ -74,9 +69,6 @@ void App::ProcessSceneFlags(Flags<SceneFlags> &flags) {
 	}
 	if (flags.ProcessFlag(SceneFlags::CursorRaw)) {
 		_window.SetMouseRaw(true);
-	}
-	if (flags.ProcessFlag(SceneFlags::ResetCursor)) {
-		_window.ResetMousePos();
 	}
 	if (flags.ProcessFlag(SceneFlags::ReloadScene)) {
 		std::string path = _currentScene->GetPath();

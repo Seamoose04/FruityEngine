@@ -34,7 +34,7 @@ public:
 					<< ">::Get() const: property not found\n";
 				return nullptr;
 			}
-			_cached = prop.get();
+			_cached = prop;
 		}
 		return _cached;
 	}

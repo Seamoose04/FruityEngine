@@ -13,7 +13,7 @@ public:
 
 private:
 	glm::vec2 _MeasureContent() override;
-	void _Arrange(Rect availableRect) override;
+	void _Arrange() override;
 	void _BuildMesh();
 
 	std::string _fontPath;

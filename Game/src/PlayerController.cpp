@@ -12,7 +12,6 @@ public:
 		_scene = scene;
 		_transform.From(_gameObject);
 		if (auto lockedScene = _scene.lock()) {
-			lockedScene->SetFlag(SceneFlags::VNC);
 			lockedScene->SetFlag(SceneFlags::CursorHidden);
 		}
 	}

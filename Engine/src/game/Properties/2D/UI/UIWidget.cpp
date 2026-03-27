@@ -8,6 +8,7 @@ void UIWidget::FromJSON(const json& j) {
 }
 
 void UIWidget::OnCreate(std::weak_ptr<Scene> scene) {
+	_camera = &scene.lock()->GetCamera();
 	_layout.From(_gameObject);
 
 	auto parent = _gameObject.lock()->GetParent();
@@ -41,7 +42,7 @@ void UIWidget::Arrange(Rect availableRect) {
 	const Sides& margin = _layout->GetMargin();
 	Rect margined = {
 		availableRect.x + margin.left,
-		availableRect.y + margin.top,
+		availableRect.y - margin.top,
 		availableRect.width - margin.left - margin.right,
 		availableRect.height - margin.top - margin.bottom
 	};
@@ -49,7 +50,7 @@ void UIWidget::Arrange(Rect availableRect) {
 	float w = _ResolveAxis(_layout->GetWidth(), margined.width, measured.x);
 	float h = _ResolveAxis(_layout->GetHeight(), margined.height, measured.y);
 	_layout->GetComputedRect() = { margined.x, margined.y, w, h };
-	_Arrange(availableRect);
+	_Arrange();
 }
 
 glm::vec2 UIWidget::_MeasureContent() {
@@ -62,4 +63,6 @@ float UIWidget::_ResolveAxis(Size size, float available, float measured) {
 		case Size::Mode::Percent: return available * (size.value / 100.0f);
 		case Size::Mode::Auto: return measured;
 	}
+	std::cerr << "[UIWidget] Invalid size mode." << std::endl;
+	std::abort();
 }

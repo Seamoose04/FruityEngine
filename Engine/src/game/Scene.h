@@ -12,10 +12,8 @@ enum class SceneFlags : unsigned long {
 	CursorHidden = 1 << 1,
 	CursorLocked = 1 << 2,
 	CursorRaw = 1 << 3,
-	ResetCursor = 1 << 4,
-	ReloadScene = 1 << 5,
-	VNC = 1 << 6,
-	Quit = 1 << 7
+	ReloadScene = 1 << 4,
+	Quit = 1 << 5
 };
 
 class Scene : public std::enable_shared_from_this<Scene> {
@@ -34,10 +32,10 @@ public:
 	void Resize(int width, int height);
 
 	void SetCamera(std::weak_ptr<Camera> camera);
-	Flags<SceneFlags> &GetFlags();
+	Camera& GetCamera() const;
 	void SetFlag(SceneFlags flag);
 	void ClearFlag(SceneFlags flag);
-	Camera &GetCamera() const;
+	Flags<SceneFlags> &GetFlags();
 	const std::vector<std::shared_ptr<GameObject>>& GetRootObjects() const;
 	Renderer& GetRenderer();
 

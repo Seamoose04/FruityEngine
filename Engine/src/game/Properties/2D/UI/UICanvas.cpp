@@ -9,7 +9,7 @@ void UICanvas::OnCreate(std::weak_ptr<Scene> scene) {
 void UICanvas::Update(float dt) {
 	if (_dirty) {
 		for (auto& widget : _widgets) {
-			widget->Arrange({ -_screenSize.x / 2, -_screenSize.y / 2, _screenSize.x, _screenSize.y });
+			widget->Arrange({ -_screenSize.x / 2, _screenSize.y / 2, _screenSize.x, _screenSize.y });
 		}
 		_dirty = false;
 	}

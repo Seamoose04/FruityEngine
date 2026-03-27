@@ -30,6 +30,10 @@ const Sides& UILayout::GetPadding() const {
 	return _padding;
 }
 
+const Rect& UILayout::GetComputedRect() const {
+	return _computedRect;
+}
+
 Rect& UILayout::GetComputedRect() {
 	return _computedRect;
 }

@@ -2,6 +2,7 @@
 
 #include "util/EnumMap.h"
 #include <json.hpp>
+#include <glm/glm.hpp>
 
 struct Size {
 	enum class Mode {
@@ -49,6 +50,10 @@ struct Rect {
 			j.value("width", 0.0f),
 			j.value("height", 0.0f)
 		};
+	};
+	bool Contains(glm::vec2 point) const {
+		return point.x > x && point.x <= x + width
+			&& point.y > y && point.y <= y + height;
 	};
 };
 

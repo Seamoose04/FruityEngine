@@ -29,7 +29,7 @@ void UILabel::OnCreate(std::weak_ptr<Scene> scene) {
 	_mesh = Mesh({}, {}, Mesh::DrawHint::Dynamic);
 }
 
-void UILabel::_Arrange(Rect availableRect) {
+void UILabel::_Arrange() {
 	_meshDirty = true;
 }
 
@@ -74,10 +74,10 @@ void UILabel::_BuildMesh() {
 		}
 
 		unsigned int i = vertices.size();
-		vertices.push_back({{ cursor + g.planeLeft * _fontSize, baseY + g.planeTop * _fontSize,    0 }, { 0, 0, 1 }, { g.uvLeft,  g.uvBottom }});
-        vertices.push_back({{ cursor + g.planeRight * _fontSize, baseY + g.planeTop * _fontSize,   0 }, { 0, 0, 1 }, { g.uvRight, g.uvBottom }});
-        vertices.push_back({{ cursor + g.planeLeft * _fontSize, baseY + g.planeBottom * _fontSize, 0 }, { 0, 0, 1 }, { g.uvLeft,  g.uvTop    }});
-        vertices.push_back({{ cursor + g.planeRight * _fontSize, baseY + g.planeBottom * _fontSize,0 }, { 0, 0, 1 }, { g.uvRight, g.uvTop    }});
+		vertices.push_back({{ cursor + g.planeLeft * _fontSize, baseY - _fontSize + g.planeTop * _fontSize,    0 }, { 0, 0, 1 }, { g.uvLeft,  g.uvBottom }});
+        vertices.push_back({{ cursor + g.planeRight * _fontSize, baseY - _fontSize + g.planeTop * _fontSize,   0 }, { 0, 0, 1 }, { g.uvRight, g.uvBottom }});
+        vertices.push_back({{ cursor + g.planeLeft * _fontSize, baseY - _fontSize + g.planeBottom * _fontSize, 0 }, { 0, 0, 1 }, { g.uvLeft,  g.uvTop    }});
+        vertices.push_back({{ cursor + g.planeRight * _fontSize, baseY - _fontSize + g.planeBottom * _fontSize,0 }, { 0, 0, 1 }, { g.uvRight, g.uvTop    }});
 		indices.insert(indices.end(), { i, i+2, i+1, i+1, i+2, i+3 });
 		cursor += g.advance * _fontSize;
 	}

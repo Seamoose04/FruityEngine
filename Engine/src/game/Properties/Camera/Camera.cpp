@@ -64,6 +64,20 @@ glm::mat4 Camera::GetView() const {
 	return _view;
 }
 
-glm::mat4 Camera::GetProjection() const { return _projection; }
+glm::mat4 Camera::GetProjection() const {
+	return _projection;
+}
+
+glm::vec2 Camera::ScreenToWorld(glm::vec2 screenPos) const {
+	if (_mode == ProjectionMode::Orthographic) {
+		return {
+			screenPos.x - _screenWidth * 0.5f,
+			-screenPos.y + _screenHeight * 0.5f
+		};
+	} else {
+		std::cerr << "[Camera] Perspective conversion not implemented yet!" << std::endl;
+		std::abort();
+	}
+}
 
 REGISTER_PROPERTY(Camera)

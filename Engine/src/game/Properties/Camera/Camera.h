@@ -18,6 +18,7 @@ public:
 	void UpdateProjection();
 	glm::mat4 GetView() const;
 	glm::mat4 GetProjection() const;
+	glm::vec2 ScreenToWorld(glm::vec2 screenPos) const;
 
 private:
 	float _fov;

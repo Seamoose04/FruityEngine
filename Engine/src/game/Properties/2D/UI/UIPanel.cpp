@@ -20,7 +20,6 @@ void UIPanel::FromJSON(const json& j) {
 
 void UIPanel::OnCreate(std::weak_ptr<Scene> scene) {
 	UIWidget::OnCreate(scene);
-	_layout.From(_gameObject);
 	_material = std::make_shared<FlatMaterial>();
 	_material->Init();
 	_material->SetColor(glm::vec3(_color));
@@ -28,21 +27,23 @@ void UIPanel::OnCreate(std::weak_ptr<Scene> scene) {
 	_BuildMesh();
 }
 
-void UIPanel::_Arrange(Rect availableRect) {
+void UIPanel::_Arrange() {
+	const Rect& computed = _layout->GetComputedRect();
+	const Sides& padding = _layout->GetPadding();
 	Rect inner = {
-		availableRect.x + _layout->GetPadding().left,
-		availableRect.y + _layout->GetPadding().top,
-		availableRect.width - _layout->GetPadding().left - _layout->GetPadding().right,
-		availableRect.height - _layout->GetPadding().top - _layout->GetPadding().bottom
+		computed.x + padding.left,
+		computed.y - padding.top,
+		computed.width - padding.left - padding.right,
+		computed.height - padding.top - padding.bottom
 	};
 
 	switch (_flow) {
 		case Direction::Vertical: {
 			float cursor = inner.y;
 			for (auto& child : _children) {
-				Rect childAvailable = { inner.x, cursor, inner.width, inner.height - (cursor - inner.y) };
+				Rect childAvailable = { inner.x, cursor, inner.width, inner.height - (inner.y - cursor) };
 				child->Arrange(childAvailable);
-				cursor += child->GetLayout()->GetComputedRect().height + _gap;
+				cursor -= child->GetLayout()->GetComputedRect().height + _gap;
 			}
 			break;
 		}
@@ -73,10 +74,10 @@ void UIPanel::_BuildMesh() {
     float h = computedRect.height;
 
     std::vector<Vertex> vertices = {
-        {{ x,     y,     0 }, { 0, 0, 1 }, { 0, 0 }},
-        {{ x + w, y,     0 }, { 0, 0, 1 }, { 1, 0 }},
-        {{ x,     y + h, 0 }, { 0, 0, 1 }, { 0, 1 }},
-        {{ x + w, y + h, 0 }, { 0, 0, 1 }, { 1, 1 }},
+        {{ x,     y - h,     0 }, { 0, 0, 1 }, { 0, 0 }},
+        {{ x + w, y - h,     0 }, { 0, 0, 1 }, { 1, 0 }},
+        {{ x,     y, 0 }, { 0, 0, 1 }, { 0, 1 }},
+        {{ x + w, y, 0 }, { 0, 0, 1 }, { 1, 1 }},
     };
     std::vector<unsigned int> indices = { 0, 1, 2, 1, 3, 2 };
     _mesh.Upload(vertices, indices);
