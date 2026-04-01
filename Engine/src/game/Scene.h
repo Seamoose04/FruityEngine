@@ -39,6 +39,11 @@ public:
 	const std::vector<std::shared_ptr<GameObject>>& GetRootObjects() const;
 	Renderer& GetRenderer();
 
+	GameObject* Instantiate(const json& chunk, GameObject* parent);
+	GameObject* Instantiate(const json& chunk);
+	GameObject* FindByName(const std::string& name) const;
+	GameObject* FindByPath(const std::string& path) const;
+
 	std::string GetPath() const;
 
 private:

@@ -2,6 +2,6 @@
 	"objects": [
 		"objects/Camera.json",
 		"objects/PostProcess.json",
-		"objects/UI.json"
+		"objects/Hierarchy.json"
 	]
 }

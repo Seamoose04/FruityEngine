@@ -1,0 +1,12 @@
+{
+    "objects": [
+        "objects/player.json",
+		"objects/monkey.json",
+		"objects/monkey2.json",
+		"objects/monkey3.json",
+        "objects/postProcess.json",
+		"objects/light.json",
+		"objects/light2.json",
+		"objects/light3.json"
+    ]
+}

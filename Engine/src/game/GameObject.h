@@ -24,7 +24,11 @@ public:
 
 	const std::weak_ptr<GameObject>& GetParent() const;
 	const std::vector<std::shared_ptr<GameObject>>& GetChildren() const;
-	std::string GetName() const;
+	void AddChild(std::shared_ptr<GameObject> child);
+	GameObject* GetChildByName(const std::string& name) const;
+	GameObject* GetChildByPath(const std::string& path) const;
+
+	const std::string& GetName() const;
 	template <typename T>
 	T *GetProperty();
 

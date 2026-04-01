@@ -18,14 +18,18 @@ public:
 	virtual void Draw(Renderer& renderer) = 0;
 	UILayout* GetLayout();
 	int GetZIndex() const;
+	virtual glm::vec2 MeasureContent();
+	void MarkDirty();
+	void DirtyChildren();
 
 protected:
-	virtual glm::vec2 _MeasureContent();
 	virtual void _Arrange() = 0;
 	float _ResolveAxis(Size size, float available, float measured = 0.0f);
 
 	int _zIndex = 0;
+	bool _dirty = true;
 	PropertyRef<UILayout> _layout;
+	UIWidget* _parent = nullptr;
 	std::vector<std::shared_ptr<UIWidget>> _children;
 	Camera* _camera = nullptr;
 };

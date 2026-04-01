@@ -29,7 +29,6 @@ void App::Run() {
 			ProcessSceneFlags(_currentScene->GetFlags());
             _currentScene->HandleInput(_window, dt);
             _currentScene->Update(dt);
-
             _currentScene->Render();
 			postRender.Call();
         }

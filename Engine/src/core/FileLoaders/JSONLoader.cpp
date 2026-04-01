@@ -3,8 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "graphics/PostProcessEffect.h"
-
 bool JSONLoader::CanLoad(const std::string& path) const {
     return path.ends_with(".json");
 }

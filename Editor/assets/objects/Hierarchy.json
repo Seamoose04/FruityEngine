@@ -1,0 +1,15 @@
+{
+	"type": "GameObject",
+	"name": "hierarchy",
+	"properties": {
+		"HierarchyController": {
+			"_placeholder": true
+		},
+		"HierarchyPanel": {
+			"_placeholder": true
+		},
+		"UICanvas": {
+			"_placeholder": true
+		}
+	}
+}

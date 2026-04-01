@@ -6,7 +6,7 @@ void FlatMaterial::FromJSON(const json& j) {
 	_shader = std::make_shared<Shader>();
 	_shader->Load(ENGINE_MATERIAL_SHADER_PATH + "flat.vert", ENGINE_MATERIAL_SHADER_PATH + "flat.frag");
 
-	_color = glm::vec3(j["color"][0], j["color"][1], j["color"][2]);
+	_color = glm::vec4(j["color"][0], j["color"][1], j["color"][2], j.value("opacity", 1.0f));
 }
 
 void FlatMaterial::Init() {
@@ -14,13 +14,13 @@ void FlatMaterial::Init() {
 	_shader->Load(ENGINE_MATERIAL_SHADER_PATH + "flat.vert", ENGINE_MATERIAL_SHADER_PATH + "flat.frag");
 }
 
-void FlatMaterial::SetColor(glm::vec3 color) {
+void FlatMaterial::SetColor(glm::vec4 color) {
 	_color = color;
 }
 
 void FlatMaterial::Apply() {
 	_shader->Use();
-	_shader->SetVec3("u_Color", _color);
+	_shader->SetVec4("u_Color", _color);
 }
 
 REGISTER_MATERIAL(FlatMaterial)

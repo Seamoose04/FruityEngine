@@ -1,0 +1,32 @@
+{
+    "type": "GameObject",
+	"name": "light2",
+    "properties": {
+        "Transform": {
+            "position": [
+                -2.0,
+                0.0,
+                -2.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        "PointLightProperty": {
+            "color": [
+                1.0,
+                0.0,
+                0.0
+            ],
+            "intensity": 2.0,
+			"radius": 8
+        }
+    }
+}

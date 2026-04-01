@@ -22,9 +22,61 @@ void UIPanel::OnCreate(std::weak_ptr<Scene> scene) {
 	UIWidget::OnCreate(scene);
 	_material = std::make_shared<FlatMaterial>();
 	_material->Init();
-	_material->SetColor(glm::vec3(_color));
+	_UpdateMaterial();
 	_mesh = Mesh({}, {}, Mesh::DrawHint::Dynamic);
 	_BuildMesh();
+}
+
+void UIPanel::SetColor(const glm::vec4& color) {
+	_color = color;
+	_UpdateMaterial();
+}
+
+void UIPanel::_UpdateMaterial() {
+	_material->SetColor(_color);
+}
+
+glm::vec2 UIPanel::MeasureContent() {
+	if (_children.empty()) {
+		return glm::vec2(0.0f);
+	}
+	switch (_flow) {
+		case Direction::Vertical: {
+			float maxWidth = 0;
+			float totalHeight = 0;
+			for (auto& child : _children) {
+				glm::vec2 childSize = child->MeasureContent();
+				
+				maxWidth = std::max(maxWidth, childSize.x);
+				totalHeight += childSize.y;
+			}
+			totalHeight += _gap * (_children.size() - 1);
+			return glm::vec2(maxWidth, totalHeight);
+		}
+		case Direction::Horizontal: {
+			float totalWidth = 0;
+			float maxHeight = 0;
+			for (auto& child : _children) {
+				glm::vec2 childSize = child->MeasureContent();
+				
+				totalWidth += childSize.x;
+				maxHeight = std::max(maxHeight, childSize.y);
+			}
+			totalWidth += _gap * (_children.size() - 1);
+			return glm::vec2(totalWidth, maxHeight);
+		}
+		case Direction::Depth: {
+			float maxWidth = 0;
+			float maxHeight = 0;
+			for (auto& child : _children) {
+				glm::vec2 childSize = child->MeasureContent();
+
+				maxWidth = std::max(maxWidth, childSize.x);
+				maxHeight = std::max(maxHeight, childSize.y);
+			}
+			return glm::vec2(maxWidth, maxHeight);
+		}
+	}
 }
 
 void UIPanel::_Arrange() {

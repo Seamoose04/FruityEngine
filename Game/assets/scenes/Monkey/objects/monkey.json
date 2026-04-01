@@ -1,0 +1,33 @@
+{
+    "type": "GameObject",
+	"name": "monkey",
+	"properties": {
+		"Transform": {
+			"position": [0, 0, -5],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1]
+		},
+		"MeshRenderer": {
+			"mesh": "Monkey.obj",
+            "material": {
+                "type": "LitMaterial",
+                "color": [
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+				"roughness": 0.0,
+				"metalness": 0.0
+            }
+		},
+		"Rotator": {
+			"xRot": 0,
+			"yRot": 200
+		},
+		"Ntzs": {
+			"min": 0.5,
+			"max": 1.5,
+			"speed": 10.0
+		}
+	}
+}

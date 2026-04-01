@@ -13,10 +13,8 @@ public:
 	void Render(Renderer& renderer) override;
 	void OnResize(int width, int height) override;
 	void RegisterWidget(UIWidget* widget);
-	void MarkDirty();
 
 private:
 	std::vector<UIWidget*> _widgets;
-	bool _dirty = true;
 	glm::vec2 _screenSize;
 };

@@ -12,7 +12,7 @@ public:
 	void OnCreate(std::weak_ptr<Scene> scene) override;
 
 private:
-	glm::vec2 _MeasureContent() override;
+	glm::vec2 MeasureContent() override;
 	void _Arrange() override;
 	void _BuildMesh();
 

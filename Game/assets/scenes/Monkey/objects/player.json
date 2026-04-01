@@ -1,0 +1,20 @@
+{
+    "type": "GameObject",
+	"name": "player",
+    "properties": {
+		"Transform": {
+			"position": [0, 0, 0],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1]
+		},
+		"PlayerController": {
+			"speed": 8.0
+		},
+		"Camera": {
+			"mode": "perspective",
+			"fov": 80,
+			"near": 0.1,
+			"far": 1000
+		}
+	}
+}

@@ -121,3 +121,40 @@ void Scene::Unload() {
     }
     _objects.clear();
 }
+
+GameObject* Scene::Instantiate(const json& chunk, GameObject* parent) {
+	auto gameObject = std::make_shared<GameObject>();
+	gameObject->FromJSON(chunk);
+	if (parent != nullptr) {
+		parent->AddChild(gameObject);
+	} else {
+		_objects.push_back(gameObject);
+	}
+	return gameObject.get();
+}
+
+GameObject* Scene::Instantiate(const json& chunk) {
+	return Instantiate(chunk, nullptr);
+}
+
+GameObject* Scene::FindByName(const std::string& name) const {
+	auto it = std::find_if(_objects.begin(), _objects.end(), [&](const std::shared_ptr<GameObject>& object) {
+		return object->GetName() == name;
+	});
+	if (it == _objects.end()) {
+		return nullptr;
+	}
+	return it->get();
+}
+
+GameObject* Scene::FindByPath(const std::string& path) const {
+	size_t slash = path.find('/');
+	std::string before = path.substr(0, slash);
+	std::string after = (slash != std::string::npos) ? path.substr(slash + 1) : "";
+	
+	GameObject* object = FindByName(before);
+	if (!object || after.empty()) {
+		return object;
+	}
+	return object->GetChildByPath(after);
+}

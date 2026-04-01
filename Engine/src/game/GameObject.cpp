@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "util/Registry.h"
 #include "game/Scene.h"
+#include <algorithm>
 #include <iostream>
 #include <memory>
 
@@ -94,6 +95,33 @@ const std::vector<std::shared_ptr<GameObject>>& GameObject::GetChildren() const 
 	return _children;
 }
 
-std::string GameObject::GetName() const {
+void GameObject::AddChild(std::shared_ptr<GameObject> child) {
+	child->_parent = shared_from_this();
+	_children.push_back(child);
+}
+
+GameObject* GameObject::GetChildByName(const std::string& name) const {
+	auto it = std::find_if(_children.begin(), _children.end(), [&](const std::shared_ptr<GameObject>& child) {
+		return child->GetName() == name;
+	});
+	if (it == _children.end()) {
+		return nullptr;
+	}
+	return it->get();
+}
+
+GameObject* GameObject::GetChildByPath(const std::string& path) const {
+	size_t slash = path.find('/');
+	std::string before = path.substr(0, slash);
+	std::string after = (slash != std::string::npos) ? path.substr(slash + 1) : "";
+
+	GameObject* child = GetChildByName(before);
+	if (!child || after.empty()) {
+		return child;
+	}
+	return child->GetChildByPath(after);
+}
+
+const std::string& GameObject::GetName() const {
 	return _name;
 }

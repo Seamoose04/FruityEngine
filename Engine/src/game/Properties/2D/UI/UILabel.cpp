@@ -33,7 +33,7 @@ void UILabel::_Arrange() {
 	_meshDirty = true;
 }
 
-glm::vec2 UILabel::_MeasureContent() {
+glm::vec2 UILabel::MeasureContent() {
 	if (!_font) {
 		return glm::vec2(0, 0);
 	}

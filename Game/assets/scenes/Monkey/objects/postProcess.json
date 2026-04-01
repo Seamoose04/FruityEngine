@@ -1,0 +1,20 @@
+{
+    "type": "GameObject",
+	"name": "fx",
+    "properties": {
+		"Transform": {
+			"position": [0, 0, 0],
+			"rotation": [0, 0, 0],
+			"scale": [1, 1, 1]
+		},
+		"PostProcessVolume": {
+			"effects": [
+				{ "id": "scene", "type": "Scene" },
+				{ "id": "threshold", "type": "ThresholdEffect", "input": "scene", "threshold": 1.0, "knee": 0.0 },
+				{ "id": "blurred", "type": "BlurEffect", "input": "threshold", "size": 1.0, "passes": 3 },
+				{ "id": "bloom", "type": "CombineEffect", "inputA": "scene", "inputB": "blurred", "method": "Add" },
+				{ "id": "output", "type": "RenderToScreen", "input": "bloom" }
+			]
+        }
+    }
+}

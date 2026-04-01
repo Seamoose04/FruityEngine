@@ -7,11 +7,8 @@ void UICanvas::OnCreate(std::weak_ptr<Scene> scene) {
 }
 
 void UICanvas::Update(float dt) {
-	if (_dirty) {
-		for (auto& widget : _widgets) {
-			widget->Arrange({ -_screenSize.x / 2, _screenSize.y / 2, _screenSize.x, _screenSize.y });
-		}
-		_dirty = false;
+	for (auto& widget : _widgets) {
+		widget->Arrange({ -_screenSize.x / 2, _screenSize.y / 2, _screenSize.x, _screenSize.y });
 	}
 }
 
@@ -26,16 +23,13 @@ void UICanvas::Render(Renderer& renderer) {
 
 void UICanvas::OnResize(int width, int height) {
 	_screenSize = glm::vec2(width, height);
-	MarkDirty();
+	for (auto* widget : _widgets) {
+		widget->DirtyChildren();
+	}
 }
 
 void UICanvas::RegisterWidget(UIWidget* widget) {
 	_widgets.push_back(widget);
-	MarkDirty();
-}
-
-void UICanvas::MarkDirty() {
-	_dirty = true;
 }
 
 REGISTER_PROPERTY(UICanvas)

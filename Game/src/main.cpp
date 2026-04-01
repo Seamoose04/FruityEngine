@@ -10,8 +10,8 @@ int main(int argc, char* argv[]) {
 	#endif
 	std::filesystem::current_path(exePath);
 
-    App app(1920, 1080, "4D Game");
-    app.SetScene(Scene::LoadFromFile("assets/scenes/default/scene.json"));
+    App app(1920, 1080, "Monkey Game");
+    app.SetScene(Scene::LoadFromFile("assets/scenes/Monkey/scene.json"));
     app.Run();
     return EXIT_SUCCESS;
 }

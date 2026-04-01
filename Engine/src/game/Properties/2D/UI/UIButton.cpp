@@ -1,17 +1,39 @@
 #include "UIButton.h"
 #include "GLFW/glfw3.h"
-#include "game/ActionRegistry.h"
 
 void UIButton::FromJSON(const json& j) {
 	UIWidget::FromJSON(j);
-	_onClick = j.value("onClick", "");
-	_onRelease = j.value("onRelease", "");
-	_onEnter = j.value("onEnter", "");
-	_onExit = j.value("onExit", "");
+	if (j.contains("onClick")) {
+		_onClick.FromJSON(j["onClick"]);
+	}
+	if (j.contains("onRelease")) {
+		_onRelease.FromJSON(j["onRelease"]);
+	}
+	if (j.contains("onEnter")) {
+		_onEnter.FromJSON(j["onEnter"]);
+	}
+	if (j.contains("onExit")) {
+		_onExit.FromJSON(j["onExit"]);
+	}
 }
 
 void UIButton::OnCreate(std::weak_ptr<Scene> scene) {
 	UIWidget::OnCreate(scene);
+}
+
+glm::vec2 UIButton::MeasureContent() {
+	if (_children.empty()) {
+		return glm::vec2(0.0f);
+	}
+	float maxWidth = 0;
+	float maxHeight = 0;
+	for (auto& child : _children) {
+		glm::vec2 childSize = child->MeasureContent();
+
+		maxWidth = std::max(maxWidth, childSize.x);
+		maxHeight = std::max(maxHeight, childSize.y);
+	}
+	return glm::vec2(maxWidth, maxHeight);
 }
 
 void UIButton::Draw(Renderer& renderer) {
@@ -43,16 +65,16 @@ void UIButton::HandleInput(const Window& window, float dt) {
 	_pressed = _hovered && window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT);
 
 	if (!_onEnter.empty() && _hovered && !wasHovered) {
-		ActionRegistry::Instance().Execute(_onEnter);
+		_onEnter.Invoke();
 	}
 	if (!_onExit.empty() && !_hovered && wasHovered) {
-		ActionRegistry::Instance().Execute(_onExit);
+		_onExit.Invoke();
 	}
 	if (!_onClick.empty() && _pressed && !wasPressed) {
-		ActionRegistry::Instance().Execute(_onClick);
+		_onClick.Invoke();
 	}
 	if (!_onRelease.empty() && !_pressed && wasPressed) {
-		ActionRegistry::Instance().Execute(_onRelease);
+		_onRelease.Invoke();
 	}
 }
 

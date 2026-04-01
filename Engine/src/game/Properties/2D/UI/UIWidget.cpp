@@ -14,6 +14,7 @@ void UIWidget::OnCreate(std::weak_ptr<Scene> scene) {
 	auto parent = _gameObject.lock()->GetParent();
 	while (auto parentObj = parent.lock()) {
 		if (auto widget = parentObj->GetProperty<UIWidget>()) {
+			_parent = widget;
 			widget->AddChild(std::static_pointer_cast<UIWidget>(shared_from_this()));
 			return;
 		}
@@ -35,10 +36,27 @@ int UIWidget::GetZIndex() const {
 }
 
 void UIWidget::AddChild(const std::shared_ptr<UIWidget> child) {
+	MarkDirty();
 	_children.push_back(child);
 }
 
+void UIWidget::MarkDirty() {
+	_dirty = true;
+	if (_parent != nullptr) {
+		_parent->MarkDirty();
+	}
+}
+void UIWidget::DirtyChildren() {
+	_dirty = true;
+	for (auto& child : _children) {
+		child->DirtyChildren();
+	}
+}
+
 void UIWidget::Arrange(Rect availableRect) {
+	if (!_dirty) {
+		return;
+	}
 	const Sides& margin = _layout->GetMargin();
 	Rect margined = {
 		availableRect.x + margin.left,
@@ -46,14 +64,15 @@ void UIWidget::Arrange(Rect availableRect) {
 		availableRect.width - margin.left - margin.right,
 		availableRect.height - margin.top - margin.bottom
 	};
-	glm::vec2 measured = _MeasureContent();
+	glm::vec2 measured = MeasureContent();
 	float w = _ResolveAxis(_layout->GetWidth(), margined.width, measured.x);
 	float h = _ResolveAxis(_layout->GetHeight(), margined.height, measured.y);
 	_layout->GetComputedRect() = { margined.x, margined.y, w, h };
 	_Arrange();
+	_dirty = false;
 }
 
-glm::vec2 UIWidget::_MeasureContent() {
+glm::vec2 UIWidget::MeasureContent() {
 	return glm::vec2({ 0, 0 });
 }
 

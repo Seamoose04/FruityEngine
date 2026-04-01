@@ -8,11 +8,14 @@ class UIPanel : public UIWidget {
 public:
 	void FromJSON(const json &j) override;
 	void OnCreate(std::weak_ptr<Scene> scene) override;
-	void _Arrange() override;
 	void Draw(Renderer &renderer) override;
+	void SetColor(const glm::vec4& color);
 
 private:
+	void _Arrange() override;
+	glm::vec2 MeasureContent() override;
 	void _BuildMesh();
+	void _UpdateMaterial();
 	Mesh _mesh;
 	glm::vec4 _color;
 	Direction _flow;

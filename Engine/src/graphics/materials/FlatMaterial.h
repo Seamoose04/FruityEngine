@@ -7,10 +7,10 @@ class FlatMaterial : public Material {
 public:
 	void FromJSON(const json& j) override;
 	void Init();
-	void SetColor(glm::vec3 color);
+	void SetColor(glm::vec4 color);
 	void Apply() override;
 
 private:
-	glm::vec3 _color;
+	glm::vec4 _color;
 };
 
