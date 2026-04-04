@@ -18,12 +18,10 @@ void HierarchyNode::Select() {
 		return;
 	}
 	
-	UIPanel* bgP = bgGO->GetProperty<UIPanel>();
-	if (!bgP) {
-		return;
+	std::weak_ptr<UIPanel> bgP = bgGO->GetProperty<UIPanel>();
+	if (auto lockedBgP = bgP.lock()) {
+		lockedBgP->SetColor(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 	}
-
-	bgP->SetColor(glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 }
 
 void HierarchyNode::Deselect() {
@@ -32,12 +30,11 @@ void HierarchyNode::Deselect() {
 		return;
 	}
 	
-	UIPanel* bgP = bgGO->GetProperty<UIPanel>();
-	if (!bgP) {
-		return;
+	std::weak_ptr<UIPanel> bgP = bgGO->GetProperty<UIPanel>();
+	if (auto lockedBgP = bgP.lock()) {
+		lockedBgP->SetColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
 	}
 
-	bgP->SetColor(glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
 }
 
 REGISTER_PROPERTY(HierarchyNode)

@@ -26,7 +26,7 @@ json* EditorScene::_TraverseNode(json& node, std::vector<std::string>& segments,
 		return &node;
 	}
 	if (!node.contains("children")) {
-		std::cerr << "[EditorScene] Child not found." << std::endl;
+		std::cerr << "[EditorScene] Children not found." << std::endl;
 	}
 	json& children = node["children"];
 	for (auto& child : children) {
@@ -48,9 +48,10 @@ json* EditorScene::GetNodeAtPath(const std::string& filePath, const std::string&
 	std::string segment;
 	while (std::getline(ss, segment, '/')) {
 		segments.push_back(segment);
+		std::cout << segment << std::endl;
 	}
 
-	return _TraverseNode(_documents[filePath], segments, 0);
+	return _TraverseNode(_documents[filePath], segments, 1);
 }
 
 const json& EditorScene::GetDocument(const std::string& document) const {

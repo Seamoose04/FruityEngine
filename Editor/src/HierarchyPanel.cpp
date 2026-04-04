@@ -1,6 +1,7 @@
 #include "HierarchyPanel.h"
 #include "EditorScene.h"
 #include "game/Scene.h"
+#include "game/GameObject.h"
 
 void HierarchyPanel::FromJSON(const json& data) { }
 

@@ -79,12 +79,27 @@ void GameObject::OnResize(int width, int height) {
 }
 
 void GameObject::OnDestroy() {
-    for (auto& prop : _properties) {
-        prop->OnDestroy();
-    }
     for (auto& child : _children) {
+		child->_parent.reset();
         child->OnDestroy();
     }
+	_children.clear();
+    
+	for (auto& prop : _properties) {
+        prop->OnDestroy();
+    }
+	_properties.clear();
+	
+	if (auto parent = _parent.lock()) {
+		auto& children = parent->_children;
+		children.erase(
+			std::remove_if(children.begin(), children.end(),
+				[this](std::shared_ptr<GameObject> child) {
+					return child.get() == this;
+				}),
+			children.end()
+		);
+	}
 }
 
 const std::weak_ptr<GameObject>& GameObject::GetParent() const {

@@ -30,7 +30,7 @@ public:
 
 	const std::string& GetName() const;
 	template <typename T>
-	T *GetProperty();
+	std::shared_ptr<T> GetProperty();
 
 private:
 	std::vector<std::shared_ptr<Property>> _properties;
@@ -40,9 +40,9 @@ private:
 };
 
 template <typename T>
-T *GameObject::GetProperty() {
+std::shared_ptr<T> GameObject::GetProperty() {
 	for (auto &p : _properties) {
-		if (auto casted = dynamic_cast<T *>(p.get())) {
+		if (auto casted = dynamic_pointer_cast<T>(p)) {
 			return casted;
 		}
 	}

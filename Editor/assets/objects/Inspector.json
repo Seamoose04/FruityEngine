@@ -1,0 +1,14 @@
+{
+	"type": "GameObject",
+	"name": "inspector",
+	"properties": {
+		"InspectorPanel": {
+			"_placeholder": true
+		},
+		"UICanvas": {
+			"width": 400,
+			"anchor": [1, 0],
+			"pivot": [1, 0]
+		}
+	}
+}

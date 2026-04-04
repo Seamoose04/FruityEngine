@@ -27,6 +27,26 @@ void UIWidget::OnCreate(std::weak_ptr<Scene> scene) {
 	std::cerr << "[UIWidget] No UICanvas found in parent chain." << std::endl;
 }
 
+void UIWidget::OnDestroy() {
+	if (auto parent = _parent.lock()) {
+		auto& children = parent->_children;
+		children.erase(
+			std::remove_if(children.begin(), children.end(),
+				[this](const std::shared_ptr<UIWidget> child) {
+					return child.get() == this;
+				}),
+			children.end()
+		);
+		parent->MarkDirty();
+	} else {
+		if (auto parent = _gameObject.lock()->GetParent().lock()) {
+			if (auto canvas = parent->GetProperty<UICanvas>()) {
+				canvas->UnregisterWidget(this);
+			}
+		}
+	}
+}
+
 UILayout* UIWidget::GetLayout() {
 	return _layout.Get();
 }
@@ -42,8 +62,8 @@ void UIWidget::AddChild(const std::shared_ptr<UIWidget> child) {
 
 void UIWidget::MarkDirty() {
 	_dirty = true;
-	if (_parent != nullptr) {
-		_parent->MarkDirty();
+	if (auto parent = _parent.lock()) {
+		parent->MarkDirty();
 	}
 }
 void UIWidget::DirtyChildren() {

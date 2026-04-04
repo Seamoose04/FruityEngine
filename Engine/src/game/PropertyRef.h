@@ -9,13 +9,16 @@ public:
 	PropertyRef() = default;
 
 	PropertyRef &From(std::weak_ptr<GameObject> parent) {
-		_parent = parent.lock().get();
+		_parent = parent.lock();
 		return *this;
 	}
 
 	T *Get() {
-		if (!_cached && _parent) {
-			auto prop = _parent->GetProperty<T>();
+		if (auto cached = _cached.lock()) {
+			return cached.get();
+		}
+		if (auto parent = _parent.lock()) {
+			auto prop = parent->GetProperty<T>();
 			if (!prop) {
 				std::cerr << "PropertyRef<" << typeid(T).name()
 					<< ">::Get(): property not found\n";
@@ -23,12 +26,15 @@ public:
 			}
 			_cached = prop;
 		}
-		return _cached;
+		return _cached.lock().get();
 	}
 
 	const T *Get() const {
-		if (!_cached && _parent) {
-			auto prop = _parent->GetProperty<T>();
+		if (auto cached = _cached.lock()) {
+			return cached.get();
+		}
+		if (auto parent = _parent.lock()) {
+			auto prop = parent->GetProperty<T>();
 			if (!prop) {
 				std::cerr << "PropertyRef<" << typeid(T).name()
 					<< ">::Get() const: property not found\n";
@@ -36,7 +42,7 @@ public:
 			}
 			_cached = prop;
 		}
-		return _cached;
+		return _cached.lock().get();
 	}
 
 	T *operator->() { return Get(); }
@@ -48,6 +54,6 @@ public:
 	explicit operator bool() const { return Get() != nullptr; }
 
 private:
-	GameObject *_parent = nullptr; // non-owning pointer
-	mutable T *_cached = nullptr;  // cached resolved property
+	std::weak_ptr<GameObject> _parent; // non-owning pointer
+	mutable std::weak_ptr<T> _cached;  // cached resolved property
 };

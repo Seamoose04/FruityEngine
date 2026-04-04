@@ -10,8 +10,8 @@
 class UIWidget : public Property {
 public:
 	void FromJSON(const json& j) override;
-	void AddChild(std::shared_ptr<UIWidget> child);
 	void OnCreate(std::weak_ptr<Scene> scene) override;
+	void OnDestroy() override;
 	virtual void HandleInput(const Window &window, float dt) override {};
 
 	void Arrange(Rect availableRect);
@@ -20,6 +20,7 @@ public:
 	int GetZIndex() const;
 	virtual glm::vec2 MeasureContent();
 	void MarkDirty();
+	void AddChild(std::shared_ptr<UIWidget> child);
 	void DirtyChildren();
 
 protected:
@@ -29,7 +30,7 @@ protected:
 	int _zIndex = 0;
 	bool _dirty = true;
 	PropertyRef<UILayout> _layout;
-	UIWidget* _parent = nullptr;
+	std::weak_ptr<UIWidget> _parent;
 	std::vector<std::shared_ptr<UIWidget>> _children;
 	Camera* _camera = nullptr;
 };

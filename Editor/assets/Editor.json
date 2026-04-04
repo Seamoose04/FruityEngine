@@ -2,6 +2,7 @@
 	"objects": [
 		"objects/Camera.json",
 		"objects/PostProcess.json",
-		"objects/Hierarchy.json"
+		"objects/Hierarchy.json",
+		"objects/Inspector.json"
 	]
 }

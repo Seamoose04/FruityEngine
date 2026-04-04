@@ -7,8 +7,8 @@ void HierarchyController::FromJSON(const json& data) { }
 
 void HierarchyController::OnCreate(std::weak_ptr<Scene> scene) {
 	ActionRegistry::Instance().Register("hierarchy", "select", [this](const json& args) {
-		std::cout << "Selected '" << args["node"].get<std::string>() << "'" << std::endl;
 		_SelectNode(args["file"], args["node"]);
+		onSelectionChanged.Call();
 	});
 }
 void HierarchyController::OnDestroy() {
@@ -26,7 +26,7 @@ const std::string& HierarchyController::GetSelectedFile() const {
 void HierarchyController::_SelectNode(const std::string& file, const std::string& node) {
 	GameObject* pNodeGO = _gameObject.lock()->GetChildByPath("panel/" + _selectedNode);
 	if (pNodeGO) {
-		HierarchyNode* nodeP = pNodeGO->GetProperty<HierarchyNode>();
+		std::shared_ptr<HierarchyNode> nodeP = pNodeGO->GetProperty<HierarchyNode>();
 		if (nodeP) {
 			nodeP->Deselect();
 		}
@@ -36,7 +36,7 @@ void HierarchyController::_SelectNode(const std::string& file, const std::string
 
 	GameObject* nodeGO = _gameObject.lock()->GetChildByPath("panel/" + _selectedNode);
 	if (nodeGO) {
-		HierarchyNode* nodeP = nodeGO->GetProperty<HierarchyNode>();
+		std::shared_ptr<HierarchyNode> nodeP = nodeGO->GetProperty<HierarchyNode>();
 		if (nodeP) {
 			nodeP->Select();
 		}

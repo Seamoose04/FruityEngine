@@ -9,7 +9,9 @@
 			"_placeholder": true
 		},
 		"UICanvas": {
-			"_placeholder": true
+			"width": 400,
+			"anchor": [-1, 0],
+			"pivot": [-1, 0]
 		}
 	}
 }

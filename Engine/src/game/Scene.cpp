@@ -130,6 +130,7 @@ GameObject* Scene::Instantiate(const json& chunk, GameObject* parent) {
 	} else {
 		_objects.push_back(gameObject);
 	}
+	gameObject->OnCreate(weak_from_this());
 	return gameObject.get();
 }
 

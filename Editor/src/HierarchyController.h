@@ -1,4 +1,5 @@
 #include "game/Property.h"
+#include "util/Callback.h"
 
 class HierarchyController : public Property {
 public:
@@ -8,6 +9,8 @@ public:
 
 	const std::string& GetSelectedFile() const;
 	const std::string& GetSelectedNode() const;
+
+	Callback onSelectionChanged;
 
 private:
 	void _SelectNode(const std::string& file, const std::string& node);
