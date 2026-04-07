@@ -1,6 +1,8 @@
 #include "InspectorPanel.h"
 #include "game/Scene.h"
 #include "EditorScene.h"
+#include "game/Properties/2D/UI/UIButton.h"
+#include <iostream>
 
 void InspectorPanel::FromJSON(const json& data) { }
 
@@ -87,24 +89,76 @@ void InspectorPanel::_Rebuild() {
 		}
 	
 		for (const auto& [key, value] : node->items()) {
-			json label = {
+			json header = {
 				{ "type", "GameObject" },
-				{ "name", key },
+				{ "name", key + "_header" },
 				{ "properties", {
 					{ "UILayout", {
 						{ "width", { { "mode", "Percent" }, { "value", 100 } } },
 						{ "height", { { "mode", "Auto" } } }
 					}},
+					{ "UIButton", {
+						{ "_placeholder", true }
+					}},
+				}},
+				{ "children", {
+					{
+						{ "type", "GameObject" },
+						{ "name", "buttonLabel" },
+						{ "properties", {
+							{ "UILayout", {
+								{ "width", { { "mode", "Percent" }, { "value", 100 } } },
+								{ "height", { { "mode", "Auto" } } }
+							}},
+							{ "UILabel", {
+								{ "color", { 1, 1, 1, 1 } },
+								{ "text", key },
+								{ "font", "assets/textures/fonts/atlas" },
+								{ "fontSize", 20 },
+								{ "hAlign", "Start" }
+							}}
+						}}
+					}
+				}}
+			};
+
+			json content = {
+				{ "type", "GameObject" },
+				{ "name", key + "_content" },
+				{ "properties", {
+					{ "UILayout", {
+						{ "width", { { "mode", "Percent" }, { "value", 100 } } },
+						{ "height", { { "mode", "Auto" } } },
+					}},
+					{ "UIPanel", {
+						{ "color", { 0.15, 0.15, 0.45, 1 } },
+						{ "flow", "Vertical" },
+						{ "gap", 2 }
+					}},
 					{ "UILabel", {
-						{ "color", { 1, 1, 1, 1 } },
-						{ "text", key + ": " + value.dump() },
+						{ "color", { 0.8, 0.8, 0.8, 1 } },
+						{ "text", value.dump() },
 						{ "font", "assets/textures/fonts/atlas" },
-						{ "fontSize", 20 },
+						{ "fontSize", 16 },
 						{ "hAlign", "Start" }
 					}}
 				}}
 			};
-			scene->Instantiate(label, panelGO);
+
+			scene->Instantiate(header, panelGO);
+			GameObject* contentGO = scene->Instantiate(content, panelGO);
+
+			GameObject* headerGO = panelGO->GetChildByName(key + "_header");
+			if (headerGO) {
+				UIButton* button = headerGO->GetProperty<UIButton>().get();
+				if (button) {
+					std::cout << "found a button" << std::endl;
+					button->onClick.Subscribe([contentGO]() {
+						std::cout << "click!" << std::endl;
+						contentGO->SetActive(!contentGO->GetActive());
+					});
+				}
+			}
 		}
 	}
 }

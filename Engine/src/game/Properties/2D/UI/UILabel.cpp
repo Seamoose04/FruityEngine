@@ -4,6 +4,7 @@
 #include "util/AssetCache.h"
 
 void UILabel::FromJSON(const json& j) {
+	UIWidget::FromJSON(j);
 	_text = j["text"];
 	_fontPath = j["font"];
 	_fontSize = j["fontSize"];

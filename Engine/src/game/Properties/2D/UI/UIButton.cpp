@@ -2,58 +2,39 @@
 #include "GLFW/glfw3.h"
 
 void UIButton::FromJSON(const json& j) {
-	UIWidget::FromJSON(j);
+	UIContainer::FromJSON(j);
 	if (j.contains("onClick")) {
-		_onClick.FromJSON(j["onClick"]);
+		ActionRegistry::ActionCall call;
+		call.FromJSON(j["onClick"]);
+		onClick.Subscribe([call]() {
+			call.Invoke();
+		});
 	}
 	if (j.contains("onRelease")) {
-		_onRelease.FromJSON(j["onRelease"]);
+		ActionRegistry::ActionCall call;
+		call.FromJSON(j["onRelease"]);
+		onRelease.Subscribe([call]() {
+			call.Invoke();
+		});
 	}
 	if (j.contains("onEnter")) {
-		_onEnter.FromJSON(j["onEnter"]);
+		ActionRegistry::ActionCall call;
+		call.FromJSON(j["onEnter"]);
+		onEnter.Subscribe([call]() {
+			call.Invoke();
+		});
 	}
 	if (j.contains("onExit")) {
-		_onExit.FromJSON(j["onExit"]);
+		ActionRegistry::ActionCall call;
+		call.FromJSON(j["onExit"]);
+		onExit.Subscribe([call]() {
+			call.Invoke();
+		});
 	}
 }
 
 void UIButton::OnCreate(std::weak_ptr<Scene> scene) {
-	UIWidget::OnCreate(scene);
-}
-
-glm::vec2 UIButton::MeasureContent() {
-	if (_children.empty()) {
-		return glm::vec2(0.0f);
-	}
-	float maxWidth = 0;
-	float maxHeight = 0;
-	for (auto& child : _children) {
-		glm::vec2 childSize = child->MeasureContent();
-
-		maxWidth = std::max(maxWidth, childSize.x);
-		maxHeight = std::max(maxHeight, childSize.y);
-	}
-	return glm::vec2(maxWidth, maxHeight);
-}
-
-void UIButton::Draw(Renderer& renderer) {
-	for (auto& child : _children) {
-        child->Draw(renderer);
-    }
-}
-
-void UIButton::_Arrange() {
-	const Rect& computed = _layout->GetComputedRect();
-	const Sides& padding = _layout->GetPadding();
-	Rect inner = {
-		computed.x + padding.left,
-		computed.y - padding.top,
-		computed.width - padding.left - padding.right,
-		computed.height - padding.top - padding.bottom
-	};
-	for (auto& child : _children) {
-		child->Arrange(inner);
-	}
+	UIContainer::OnCreate(scene);
 }
 
 void UIButton::HandleInput(const Window& window, float dt) {
@@ -64,17 +45,17 @@ void UIButton::HandleInput(const Window& window, float dt) {
 	_hovered =  _Contains(worldPos);
 	_pressed = _hovered && window.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT);
 
-	if (!_onEnter.empty() && _hovered && !wasHovered) {
-		_onEnter.Invoke();
+	if (_hovered && !wasHovered) {
+		onEnter.Call();
 	}
-	if (!_onExit.empty() && !_hovered && wasHovered) {
-		_onExit.Invoke();
+	if (!_hovered && wasHovered) {
+		onExit.Call();
 	}
-	if (!_onClick.empty() && _pressed && !wasPressed) {
-		_onClick.Invoke();
+	if (_pressed && !wasPressed) {
+		onClick.Call();
 	}
-	if (!_onRelease.empty() && !_pressed && wasPressed) {
-		_onRelease.Invoke();
+	if (!_pressed && wasPressed) {
+		onRelease.Call();
 	}
 }
 

@@ -1,4 +1,5 @@
 #include "UICanvas.h"
+#include "game/Properties/2D/UI/UIContainer.h"
 #include "game/Property.h"
 #include <algorithm>
 
@@ -26,10 +27,10 @@ void UICanvas::Update(float dt) {
 }
 
 void UICanvas::Render(Renderer& renderer) {
-	std::sort(_widgets.begin(), _widgets.end(), [](UIWidget* a, UIWidget* b) {
+	std::sort(_widgets.begin(), _widgets.end(), [](std::shared_ptr<UIWidget> a, std::shared_ptr<UIWidget> b) {
 		return a->GetZIndex() < b->GetZIndex();
 	});
-	for (auto* widget : _widgets) {
+	for (auto widget : _widgets) {
 		widget->Draw(renderer);
 	}
 }
@@ -42,20 +43,22 @@ void UICanvas::OnResize(int width, int height) {
 	if (_fullscreenY) {
 		_size.y = _screenSize.y;
 	}
-	for (auto* widget : _widgets) {
-		widget->DirtyChildren();
+	for (auto widget : _widgets) {
+		if (auto container = std::dynamic_pointer_cast<UIContainer>(widget)) {
+			container->DirtyChildren();
+		}
 	}
 }
 
-void UICanvas::RegisterWidget(UIWidget* widget) {
+void UICanvas::RegisterWidget(std::shared_ptr<UIWidget> widget) {
 	_widgets.push_back(widget);
 }
 
 void UICanvas::UnregisterWidget(UIWidget* widget) {
 	_widgets.erase(
 		std::remove_if(_widgets.begin(), _widgets.end(),
-			[widget](UIWidget* child) {
-				return child == widget;
+			[widget](std::shared_ptr<UIWidget> child) {
+				return child.get() == widget;
 			}),
 		_widgets.end()
 	);

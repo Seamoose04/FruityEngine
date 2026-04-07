@@ -30,17 +30,21 @@ public:
     void HandleInput(const Window& window, float dt);
     void Render();
 	void Resize(int width, int height);
+	Renderer& GetRenderer();
 
 	void SetCamera(std::weak_ptr<Camera> camera);
 	Camera& GetCamera() const;
+
 	void SetFlag(SceneFlags flag);
 	void ClearFlag(SceneFlags flag);
 	Flags<SceneFlags> &GetFlags();
-	const std::vector<std::shared_ptr<GameObject>>& GetRootObjects() const;
-	Renderer& GetRenderer();
 
+	const std::vector<std::shared_ptr<GameObject>>& GetRootObjects() const;
+
+	std::shared_ptr<GameObject> Create(const json& chunk);
 	GameObject* Instantiate(const json& chunk, GameObject* parent);
 	GameObject* Instantiate(const json& chunk);
+
 	GameObject* FindByName(const std::string& name) const;
 	GameObject* FindByPath(const std::string& path) const;
 

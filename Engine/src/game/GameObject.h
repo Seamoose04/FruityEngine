@@ -28,6 +28,9 @@ public:
 	GameObject* GetChildByName(const std::string& name) const;
 	GameObject* GetChildByPath(const std::string& path) const;
 
+	const bool& GetActive() const;
+	void SetActive(bool active);
+
 	const std::string& GetName() const;
 	template <typename T>
 	std::shared_ptr<T> GetProperty();
@@ -37,6 +40,7 @@ private:
 	std::weak_ptr<GameObject> _parent;
 	std::vector<std::shared_ptr<GameObject>> _children;
 	std::string _name;
+	bool _active;
 };
 
 template <typename T>

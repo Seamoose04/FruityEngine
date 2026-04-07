@@ -29,9 +29,7 @@ std::shared_ptr<Scene> Scene::LoadFromFile(const std::string& path) {
 
         try {
             json objectJson = *static_cast<json*>(loader.Load(fullPath.string()));
-            auto gameObject = std::make_shared<GameObject>();
-            gameObject->FromJSON(objectJson);
-            scene->_objects.push_back(gameObject);
+			scene->_objects.push_back(scene->Create(objectJson));
         }
         catch (const std::exception& e) {
             std::cerr << "[Scene] Error loading GameObject from " << fullPath << ": " << e.what() << "\n";
@@ -83,18 +81,21 @@ void Scene::Init(int width, int height) {
 
 void Scene::Start() {
 	auto weakSelf = weak_from_this();
-    for (auto& obj : _objects)
+    for (auto& obj : _objects) {
         obj->OnCreate(weakSelf);
+	}
 }
 
 void Scene::Update(float deltaTime) {
-    for (auto& obj : _objects)
+    for (auto& obj : _objects) {
         obj->Update(deltaTime);
+	}
 }
 
 void Scene::HandleInput(const Window& window, float dt) {
-    for (auto& obj : _objects)
+    for (auto& obj : _objects) {
         obj->HandleInput(window, dt);
+	}
 }
 
 void Scene::Render() {
@@ -112,6 +113,7 @@ void Scene::Resize(int width, int height) {
 	for (auto& obj : _objects) {
 		obj->OnResize(width, height);
 	}
+
 	_renderer->Resize(width, height);
 }
 
@@ -119,19 +121,29 @@ void Scene::Unload() {
     for (auto& obj : _objects) {
         obj->OnDestroy();
     }
+
     _objects.clear();
 }
 
-GameObject* Scene::Instantiate(const json& chunk, GameObject* parent) {
+std::shared_ptr<GameObject> Scene::Create(const json& chunk) {
 	auto gameObject = std::make_shared<GameObject>();
 	gameObject->FromJSON(chunk);
-	if (parent != nullptr) {
-		parent->AddChild(gameObject);
-	} else {
-		_objects.push_back(gameObject);
+	if (chunk.contains("children")) {
+		for (auto& childData : chunk["children"]) {
+			std::shared_ptr<GameObject> child = Create(childData);
+			gameObject->AddChild(child);
+		}
 	}
-	gameObject->OnCreate(weak_from_this());
-	return gameObject.get();
+	return gameObject;
+}
+
+GameObject* Scene::Instantiate(const json& chunk, GameObject* parent) {
+	std::shared_ptr<GameObject> go = Create(chunk);
+	if (parent) {
+		parent->AddChild(go);
+	}
+	go->OnCreate(weak_from_this());
+	return go.get();
 }
 
 GameObject* Scene::Instantiate(const json& chunk) {

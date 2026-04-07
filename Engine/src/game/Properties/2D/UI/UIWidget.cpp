@@ -2,24 +2,26 @@
 
 #include "game/GameObject.h"
 #include "game/Properties/2D/UI/UICanvas.h"
+#include "UIContainer.h"
 
 void UIWidget::FromJSON(const json& j) {
 	_zIndex = j.value("zIndex", 0);
 }
 
 void UIWidget::OnCreate(std::weak_ptr<Scene> scene) {
+	std::cout << "creating UIWidget: " << _gameObject.lock()->GetName() << std::endl;
 	_camera = &scene.lock()->GetCamera();
 	_layout.From(_gameObject);
 
-	auto parent = _gameObject.lock()->GetParent();
-	while (auto parentObj = parent.lock()) {
-		if (auto widget = parentObj->GetProperty<UIWidget>()) {
+	std::weak_ptr<GameObject> parent = _gameObject.lock()->GetParent();
+	while (std::shared_ptr<GameObject> parentObj = parent.lock()) {
+		if (std::shared_ptr<UIContainer> widget = parentObj->GetProperty<UIContainer>()) {
 			_parent = widget;
 			widget->AddChild(std::static_pointer_cast<UIWidget>(shared_from_this()));
 			return;
 		}
-		if (auto canvas = parentObj->GetProperty<UICanvas>()) {
-			canvas->RegisterWidget(this);
+		if (std::shared_ptr<UICanvas> canvas = parentObj->GetProperty<UICanvas>()) {
+			canvas->RegisterWidget(std::static_pointer_cast<UIWidget>(shared_from_this()));
 			return;
 		}
 		parent = parentObj->GetParent();
@@ -28,21 +30,12 @@ void UIWidget::OnCreate(std::weak_ptr<Scene> scene) {
 }
 
 void UIWidget::OnDestroy() {
-	if (auto parent = _parent.lock()) {
-		auto& children = parent->_children;
-		children.erase(
-			std::remove_if(children.begin(), children.end(),
-				[this](const std::shared_ptr<UIWidget> child) {
-					return child.get() == this;
-				}),
-			children.end()
-		);
-		parent->MarkDirty();
-	} else {
-		if (auto parent = _gameObject.lock()->GetParent().lock()) {
-			if (auto canvas = parent->GetProperty<UICanvas>()) {
-				canvas->UnregisterWidget(this);
-			}
+	if (auto parent = _gameObject.lock()->GetParent().lock()) {
+		if (auto container = parent->GetProperty<UIContainer>()) {
+			container->RemoveChild(this);
+		}
+		if (auto canvas = parent->GetProperty<UICanvas>()) {
+			canvas->UnregisterWidget(this);
 		}
 	}
 }
@@ -55,25 +48,17 @@ int UIWidget::GetZIndex() const {
 	return _zIndex;
 }
 
-void UIWidget::AddChild(const std::shared_ptr<UIWidget> child) {
-	MarkDirty();
-	_children.push_back(child);
-}
-
 void UIWidget::MarkDirty() {
 	_dirty = true;
 	if (auto parent = _parent.lock()) {
 		parent->MarkDirty();
 	}
 }
-void UIWidget::DirtyChildren() {
-	_dirty = true;
-	for (auto& child : _children) {
-		child->DirtyChildren();
-	}
-}
 
 void UIWidget::Arrange(Rect availableRect) {
+	if (!_gameObject.lock()->GetActive()) {
+		return;
+	}
 	if (!_dirty) {
 		return;
 	}

@@ -7,6 +7,7 @@
 
 void GameObject::FromJSON(const json& data) {
 	_name = data["name"];
+	_active = data.value("active", true);
     for (auto& [key, value] : data["properties"].items()) {
         auto property = Registry<Property>::Instance().Create(key);
         if (!property) {
@@ -19,14 +20,6 @@ void GameObject::FromJSON(const json& data) {
 
         property->FromJSON(value);
 	}
-	if (data.contains("children")) {
-		for (auto& childData : data["children"]) {
-			auto child = std::make_shared<GameObject>();
-			child->FromJSON(childData);
-			child->_parent = shared_from_this();
-			_children.push_back(std::move(child));
-		}
-	}
 }
 
 void GameObject::AddProperty(std::shared_ptr<Property> property) {
@@ -34,15 +27,18 @@ void GameObject::AddProperty(std::shared_ptr<Property> property) {
 }
 
 void GameObject::OnCreate(std::weak_ptr<Scene> scene) {
-    for (auto& prop : _properties) {
-        prop->OnCreate(scene);
-    }
     for (auto& child : _children) {
         child->OnCreate(scene);
+    }
+    for (auto& prop : _properties) {
+        prop->OnCreate(scene);
     }
 }
 
 void GameObject::Update(float dt) {
+	if (!_active) {
+		return;
+	}
     for (auto& prop : _properties) {
         prop->Update(dt);
     }
@@ -52,6 +48,9 @@ void GameObject::Update(float dt) {
 }
 
 void GameObject::HandleInput(const Window& window, float dt) {
+	if (!_active) {
+		return;
+	}
     for (auto& prop : _properties) {
         prop->HandleInput(window, dt);
     }
@@ -61,6 +60,9 @@ void GameObject::HandleInput(const Window& window, float dt) {
 }
 
 void GameObject::Render(Renderer& renderer) {
+	if (!_active) {
+		return;
+	}
     for (auto& prop : _properties) {
         prop->Render(renderer);
     }
@@ -70,6 +72,9 @@ void GameObject::Render(Renderer& renderer) {
 }
 
 void GameObject::OnResize(int width, int height) {
+	if (!_active) {
+		return;
+	}
 	for (auto& prop : _properties) {
 		prop->OnResize(width, height);
 	}
@@ -104,6 +109,14 @@ void GameObject::OnDestroy() {
 
 const std::weak_ptr<GameObject>& GameObject::GetParent() const {
 	return _parent;
+}
+
+const bool& GameObject::GetActive() const {
+	return _active;
+}
+
+void GameObject::SetActive(bool active) {
+	_active = active;
 }
 
 const std::vector<std::shared_ptr<GameObject>>& GameObject::GetChildren() const {

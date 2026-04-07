@@ -7,6 +7,7 @@
 #include "game/Properties/Camera/Camera.h"
 #include <memory>
 
+class UIContainer;
 class UIWidget : public Property {
 public:
 	void FromJSON(const json& j) override;
@@ -20,8 +21,6 @@ public:
 	int GetZIndex() const;
 	virtual glm::vec2 MeasureContent();
 	void MarkDirty();
-	void AddChild(std::shared_ptr<UIWidget> child);
-	void DirtyChildren();
 
 protected:
 	virtual void _Arrange() = 0;
@@ -30,7 +29,6 @@ protected:
 	int _zIndex = 0;
 	bool _dirty = true;
 	PropertyRef<UILayout> _layout;
-	std::weak_ptr<UIWidget> _parent;
-	std::vector<std::shared_ptr<UIWidget>> _children;
+	std::weak_ptr<UIContainer> _parent;
 	Camera* _camera = nullptr;
 };

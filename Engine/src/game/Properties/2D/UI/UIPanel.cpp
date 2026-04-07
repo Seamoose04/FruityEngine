@@ -3,7 +3,7 @@
 #include "game/PropertyRef.h"
 
 void UIPanel::FromJSON(const json& j) {
-	UIWidget::FromJSON(j);
+	UIContainer::FromJSON(j);
 	if (j.contains("color")) {
 		_color = glm::vec4({
 			j["color"][0],
@@ -14,8 +14,6 @@ void UIPanel::FromJSON(const json& j) {
 	} else {
 		_color = glm::vec4(0.0f);
 	}
-	_flow = j.contains("flow") ? DirectionMap.strToEnum.at(j["flow"]) : Direction::Vertical;
-	_gap = j.value("gap", 0.0f);
 }
 
 void UIPanel::OnCreate(std::weak_ptr<Scene> scene) {
@@ -36,85 +34,8 @@ void UIPanel::_UpdateMaterial() {
 	_material->SetColor(_color);
 }
 
-glm::vec2 UIPanel::MeasureContent() {
-	if (_children.empty()) {
-		return glm::vec2(0.0f);
-	}
-	switch (_flow) {
-		case Direction::Vertical: {
-			float maxWidth = 0;
-			float totalHeight = 0;
-			for (auto& child : _children) {
-				glm::vec2 childSize = child->MeasureContent();
-				
-				maxWidth = std::max(maxWidth, childSize.x);
-				totalHeight += childSize.y;
-			}
-			totalHeight += _gap * (_children.size() - 1);
-			return glm::vec2(maxWidth, totalHeight);
-		}
-		case Direction::Horizontal: {
-			float totalWidth = 0;
-			float maxHeight = 0;
-			for (auto& child : _children) {
-				glm::vec2 childSize = child->MeasureContent();
-				
-				totalWidth += childSize.x;
-				maxHeight = std::max(maxHeight, childSize.y);
-			}
-			totalWidth += _gap * (_children.size() - 1);
-			return glm::vec2(totalWidth, maxHeight);
-		}
-		case Direction::Depth: {
-			float maxWidth = 0;
-			float maxHeight = 0;
-			for (auto& child : _children) {
-				glm::vec2 childSize = child->MeasureContent();
-
-				maxWidth = std::max(maxWidth, childSize.x);
-				maxHeight = std::max(maxHeight, childSize.y);
-			}
-			return glm::vec2(maxWidth, maxHeight);
-		}
-	}
-}
-
 void UIPanel::_Arrange() {
-	const Rect& computed = _layout->GetComputedRect();
-	const Sides& padding = _layout->GetPadding();
-	Rect inner = {
-		computed.x + padding.left,
-		computed.y - padding.top,
-		computed.width - padding.left - padding.right,
-		computed.height - padding.top - padding.bottom
-	};
-
-	switch (_flow) {
-		case Direction::Vertical: {
-			float cursor = inner.y;
-			for (auto& child : _children) {
-				Rect childAvailable = { inner.x, cursor, inner.width, inner.height - (inner.y - cursor) };
-				child->Arrange(childAvailable);
-				cursor -= child->GetLayout()->GetComputedRect().height + _gap;
-			}
-			break;
-		}
-		case Direction::Horizontal: {
-			float cursor = inner.x;
-			for (auto& child : _children) {
-				Rect childAvailable = { cursor, inner.y, inner.width - (cursor - inner.x), inner.height };
-				child->Arrange(childAvailable);
-				cursor += child->GetLayout()->GetComputedRect().width + _gap;
-			}
-			break;
-		}
-		case Direction::Depth: {
-			for (auto& child : _children) {
-				child->Arrange(inner);
-			}
-			break;
-		}
-	}
+	UIContainer::_Arrange();
 	_BuildMesh();
 }
 
@@ -140,9 +61,7 @@ void UIPanel::Draw(Renderer& renderer) {
 		[]() { glDisable(GL_DEPTH_TEST); },
 		[]() { glEnable(GL_DEPTH_TEST); }
 	);
-	for (auto& child : _children) {
-        child->Draw(renderer);
-    }
+	UIContainer::Draw(renderer);
 }
 
 REGISTER_PROPERTY(UIPanel)

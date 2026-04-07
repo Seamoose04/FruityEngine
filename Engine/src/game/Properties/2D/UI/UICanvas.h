@@ -5,6 +5,7 @@
 #include "game/Properties/2D/UI/UIWidget.h"
 #include <glm/fwd.hpp>
 #include <vector>
+#include <memory>
 
 class UICanvas : public Property {
 public:
@@ -13,11 +14,11 @@ public:
 	void Update(float dt) override;
 	void Render(Renderer& renderer) override;
 	void OnResize(int width, int height) override;
-	void RegisterWidget(UIWidget* widget);
+	void RegisterWidget(std::shared_ptr<UIWidget> widget);
 	void UnregisterWidget(UIWidget* widget);
 
 private:
-	std::vector<UIWidget*> _widgets;
+	std::vector<std::shared_ptr<UIWidget>> _widgets;
 	bool _fullscreenX;
 	bool _fullscreenY;
 	glm::vec2 _screenSize;

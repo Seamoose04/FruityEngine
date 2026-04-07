@@ -12,6 +12,7 @@ void HierarchyPanel::OnCreate(std::weak_ptr<Scene> scene) {
 }
 
 void HierarchyPanel::_BuildUI() {
+	std::cout << "Building UI" << std::endl;
 	auto scene = _scene.lock();
 	if (!scene) {
 		return;
