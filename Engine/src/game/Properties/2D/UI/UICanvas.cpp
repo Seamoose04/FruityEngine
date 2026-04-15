@@ -26,6 +26,16 @@ void UICanvas::Update(float dt) {
 	}
 }
 
+void UICanvas::HandleInput(const Window& window, float dt) {
+	if (_justFocused) {
+		_justFocused = false;
+		return;
+	}
+	if (window.IsMouseButtonJustPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+		Focus(nullptr);
+	}
+}
+
 void UICanvas::Render(Renderer& renderer) {
 	std::sort(_widgets.begin(), _widgets.end(), [](std::shared_ptr<UIWidget> a, std::shared_ptr<UIWidget> b) {
 		return a->GetZIndex() < b->GetZIndex();
@@ -45,7 +55,7 @@ void UICanvas::OnResize(int width, int height) {
 	}
 	for (auto widget : _widgets) {
 		if (auto container = std::dynamic_pointer_cast<UIContainer>(widget)) {
-			container->DirtyChildren();
+			container->MarkDirty();
 		}
 	}
 }
@@ -62,6 +72,17 @@ void UICanvas::UnregisterWidget(UIWidget* widget) {
 			}),
 		_widgets.end()
 	);
+}
+
+void UICanvas::Focus(IFocusable* widget) {
+	if (_focused) {
+		_focused->OnBlur();
+	}
+	_focused = widget;
+	if (_focused) {
+		_focused->OnFocus();
+		_justFocused = true;
+	}
 }
 
 REGISTER_PROPERTY(UICanvas)

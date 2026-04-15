@@ -9,7 +9,7 @@ public:
 	void SetColor(const glm::vec4& color);
 	void FromJSON(const json& j) override;
 	void Apply() override;
-	void Init();
+	void Init() override;
 	
 private:
 	Texture* _atlas = nullptr;

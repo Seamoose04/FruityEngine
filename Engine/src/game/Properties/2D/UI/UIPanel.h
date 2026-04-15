@@ -9,12 +9,15 @@ public:
 	void FromJSON(const json &j) override;
 	void OnCreate(std::weak_ptr<Scene> scene) override;
 	void Draw(Renderer &renderer) override;
+	glm::vec2 MeasureContent() override;
 	void SetColor(const glm::vec4& color);
 
 private:
 	void _Arrange() override;
 	void _BuildMesh();
 	void _UpdateMaterial();
+	Direction _flow;
+	float _gap;
 	Mesh _mesh;
 	glm::vec4 _color;
 	std::shared_ptr<FlatMaterial> _material;

@@ -1,5 +1,6 @@
 #include "RenderToScreen.h"
 
+#include "util/ShaderCache.h"
 #include <glad/glad.h>
 #include <iostream>
 
@@ -8,7 +9,7 @@ static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/fx/";
 void RenderToScreenEffect::Init(int width, int height) {
     _width = width;
     _height = height;
-    _shader.Load(ENGINE_SHADER_PATH + "screen.vert", ENGINE_SHADER_PATH + "screen.frag");
+    _shader = ShaderCache::Instance().Get(ENGINE_SHADER_PATH + "screen.vert", ENGINE_SHADER_PATH + "screen.frag");
 }
 
 void RenderToScreenEffect::Execute() {
@@ -25,8 +26,8 @@ void RenderToScreenEffect::Execute() {
     glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
 
-    _shader.Use();
-    _shader.SetInt("u_Input", 0);
+    _shader->Use();
+    _shader->SetInt("u_Input", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, input->GetOutput()->GetColorTexture());

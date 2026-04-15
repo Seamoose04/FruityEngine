@@ -30,6 +30,17 @@ void UILabel::OnCreate(std::weak_ptr<Scene> scene) {
 	_mesh = Mesh({}, {}, Mesh::DrawHint::Dynamic);
 }
 
+void UILabel::SetText(const std::string& text) {
+	_text = text;
+	MarkDirty();
+}
+
+void UILabel::SetTextColor(const glm::vec4& color) {
+	_color = color;
+	_material->SetColor(_color);
+	MarkDirty();
+}
+
 void UILabel::_Arrange() {
 	_meshDirty = true;
 }
@@ -49,6 +60,10 @@ void UILabel::Draw(Renderer& renderer) {
 		[]() { glDisable(GL_DEPTH_TEST); },
 		[]() { glEnable(GL_DEPTH_TEST); }
 	);
+}
+
+glm::vec2 UILabel::MeasureText(const std::string& text) const {
+	return _font->MeasureText(text, _fontSize);
 }
 
 void UILabel::_BuildMesh() {

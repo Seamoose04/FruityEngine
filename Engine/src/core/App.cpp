@@ -9,7 +9,7 @@ App::App(int width, int height, const std::string& title)
 {
     _window.SetVSync(true);
 
-	_window.size.OnChange([this](glm::vec2 size) {
+	_window.onResize.Subscribe([this](glm::vec2 size) {
 		_currentScene->Resize(size.x, size.y);
 	});
     std::cout << "App initialized successfully.\n";
@@ -45,7 +45,9 @@ void App::SetScene(std::shared_ptr<Scene> newScene) {
     _currentScene = std::move(newScene);
 	if (_currentScene) {
 		std::cout << "starting scene" << std::endl;
-		_currentScene->Init(_window.size->x, _window.size->y);
+		int width, height;
+		_window.GetSize(width, height);
+		_currentScene->Init(width, height);
     	_currentScene->Start();
 		std::cout << "scene started" << std::endl;
 	}

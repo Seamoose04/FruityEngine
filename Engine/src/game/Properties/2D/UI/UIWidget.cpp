@@ -9,20 +9,23 @@ void UIWidget::FromJSON(const json& j) {
 }
 
 void UIWidget::OnCreate(std::weak_ptr<Scene> scene) {
-	std::cout << "creating UIWidget: " << _gameObject.lock()->GetName() << std::endl;
 	_camera = &scene.lock()->GetCamera();
 	_layout.From(_gameObject);
 
 	std::weak_ptr<GameObject> parent = _gameObject.lock()->GetParent();
 	while (std::shared_ptr<GameObject> parentObj = parent.lock()) {
-		if (std::shared_ptr<UIContainer> widget = parentObj->GetProperty<UIContainer>()) {
-			_parent = widget;
-			widget->AddChild(std::static_pointer_cast<UIWidget>(shared_from_this()));
+		if (std::shared_ptr<UICanvas> canvas = parentObj->GetProperty<UICanvas>()) {
+			if (!_parent.lock()) {
+				canvas->RegisterWidget(std::static_pointer_cast<UIWidget>(shared_from_this()));
+			}
+			_canvas = canvas;
 			return;
 		}
-		if (std::shared_ptr<UICanvas> canvas = parentObj->GetProperty<UICanvas>()) {
-			canvas->RegisterWidget(std::static_pointer_cast<UIWidget>(shared_from_this()));
-			return;
+		if (std::shared_ptr<UIContainer> widget = parentObj->GetProperty<UIContainer>()) {
+			if (!_parent.lock()) {
+				_parent = widget;
+				widget->AddChild(std::static_pointer_cast<UIWidget>(shared_from_this()));
+			}
 		}
 		parent = parentObj->GetParent();
 	}
@@ -49,10 +52,14 @@ int UIWidget::GetZIndex() const {
 }
 
 void UIWidget::MarkDirty() {
-	_dirty = true;
+	SetDirty();
 	if (auto parent = _parent.lock()) {
 		parent->MarkDirty();
 	}
+}
+
+void UIWidget::SetDirty() {
+	_dirty = true;
 }
 
 void UIWidget::Arrange(Rect availableRect) {

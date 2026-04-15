@@ -7,5 +7,5 @@ public:
     void Execute() override;
 
 private:
-    Shader _shader;
+    std::shared_ptr<Shader> _shader;
 };

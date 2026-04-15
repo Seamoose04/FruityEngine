@@ -171,3 +171,4 @@ GameObject* Scene::FindByPath(const std::string& path) const {
 	}
 	return object->GetChildByPath(after);
 }
+

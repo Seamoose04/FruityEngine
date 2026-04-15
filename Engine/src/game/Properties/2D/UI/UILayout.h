@@ -9,7 +9,11 @@ public:
 	const Size& GetWidth() const;
 	const Size& GetHeight() const;
 	const Sides& GetMargin() const;
-	const Sides& GetPadding() const;
+
+	void SetWidth(const Size& width);
+	void SetHeight(const Size& height);
+	void SetMargin(const Sides& margin);
+
 	Align GetAlignSelf() const;
 	const Rect& GetComputedRect() const;
 	Rect& GetComputedRect();
@@ -20,7 +24,6 @@ public:
 private:
 	Size _width, _height;
 	Sides _margin = { 0.0f, 0.0f, 0.0f, 0.0f };
-	Sides _padding = { 0.0f, 0.0f, 0.0f, 0.0f };
 	Align _alignSelf = Align::Center;
 	Rect _computedRect;
 };

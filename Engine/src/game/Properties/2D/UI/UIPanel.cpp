@@ -4,6 +4,9 @@
 
 void UIPanel::FromJSON(const json& j) {
 	UIContainer::FromJSON(j);
+	_flow = j.contains("flow") ? DirectionMap.strToEnum.at(j["flow"]) : Direction::Vertical;
+	_gap = j.value("gap", 0.0f);
+
 	if (j.contains("color")) {
 		_color = glm::vec4({
 			j["color"][0],
@@ -36,6 +39,40 @@ void UIPanel::_UpdateMaterial() {
 
 void UIPanel::_Arrange() {
 	UIContainer::_Arrange();
+	const Rect& computed = _layout->GetComputedRect();
+	Rect inner = {
+		computed.x + _padding.left,
+		computed.y - _padding.top,
+		computed.width - _padding.left - _padding.right,
+		computed.height - _padding.top - _padding.bottom
+	};
+
+	switch (_flow) {
+		case Direction::Vertical: {
+			float cursor = inner.y;
+			for (auto& child : ActiveChildren()) {
+				Rect childAvailable = { inner.x, cursor, inner.width, inner.height - (inner.y - cursor) };
+				child->Arrange(childAvailable);
+				cursor -= child->GetLayout()->GetComputedRect().height + _gap;
+			}
+			break;
+		}
+		case Direction::Horizontal: {
+			float cursor = inner.x;
+			for (auto& child : ActiveChildren()) {
+				Rect childAvailable = { cursor, inner.y, inner.width - (cursor - inner.x), inner.height };
+				child->Arrange(childAvailable);
+				cursor += child->GetLayout()->GetComputedRect().width + _gap;
+			}
+			break;
+		}
+		case Direction::Depth: {
+			for (auto& child : ActiveChildren()) {
+				child->Arrange(inner);
+			}
+			break;
+		}
+	}
 	_BuildMesh();
 }
 
@@ -62,6 +99,51 @@ void UIPanel::Draw(Renderer& renderer) {
 		[]() { glEnable(GL_DEPTH_TEST); }
 	);
 	UIContainer::Draw(renderer);
+}
+
+glm::vec2 UIPanel::MeasureContent() {
+	if (ActiveChildren().empty()) {
+		return glm::vec2(0.0f);
+	}
+	switch (_flow) {
+		case Direction::Vertical: {
+			float maxWidth = 0;
+			float totalHeight = 0;
+			for (auto& child : ActiveChildren()) {
+				glm::vec2 childSize = child->MeasureContent();
+				
+				maxWidth = std::max(maxWidth, childSize.x);
+				totalHeight += childSize.y;
+			}
+			totalHeight += _gap * (ActiveChildren().size() - 1);
+			return glm::vec2(maxWidth, totalHeight);
+		}
+		case Direction::Horizontal: {
+			float totalWidth = 0;
+			float maxHeight = 0;
+			for (auto& child : ActiveChildren()) {
+				glm::vec2 childSize = child->MeasureContent();
+				
+				totalWidth += childSize.x;
+				maxHeight = std::max(maxHeight, childSize.y);
+			}
+			totalWidth += _gap * (ActiveChildren().size() - 1);
+			return glm::vec2(totalWidth, maxHeight);
+		}
+		case Direction::Depth: {
+			float maxWidth = 0;
+			float maxHeight = 0;
+			for (auto& child : ActiveChildren()) {
+				glm::vec2 childSize = child->MeasureContent();
+
+				maxWidth = std::max(maxWidth, childSize.x);
+				maxHeight = std::max(maxHeight, childSize.y);
+			}
+			return glm::vec2(maxWidth, maxHeight);
+		}
+	}
+	std::cerr << "[UIPanel::MeasureContent] invalid flow." << std::endl;
+	std::abort();
 }
 
 REGISTER_PROPERTY(UIPanel)

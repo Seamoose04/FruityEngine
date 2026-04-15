@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/Properties/2D/UI/UIInterfaces.h"
 #include "game/Property.h"
 #include "game/Scene.h"
 #include "game/Properties/2D/UI/UIWidget.h"
@@ -14,10 +15,15 @@ public:
 	void Update(float dt) override;
 	void Render(Renderer& renderer) override;
 	void OnResize(int width, int height) override;
+	void HandleInput(const Window &window, float dt) override;
+
 	void RegisterWidget(std::shared_ptr<UIWidget> widget);
 	void UnregisterWidget(UIWidget* widget);
+	void Focus(IFocusable* widget);
 
 private:
+	bool _justFocused = false;
+	IFocusable* _focused;
 	std::vector<std::shared_ptr<UIWidget>> _widgets;
 	bool _fullscreenX;
 	bool _fullscreenY;

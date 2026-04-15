@@ -16,5 +16,6 @@ int main(int argc, char* argv[]) {
     App app(1920, 1080, "Fruit Bowl");
     app.SetScene(Scene::LoadFromFile("assets/Editor.json"));
     app.Run();
+
     return EXIT_SUCCESS;
 }

@@ -7,6 +7,7 @@
 #include "game/Properties/Camera/Camera.h"
 #include <memory>
 
+class UICanvas;
 class UIContainer;
 class UIWidget : public Property {
 public:
@@ -19,8 +20,9 @@ public:
 	virtual void Draw(Renderer& renderer) = 0;
 	UILayout* GetLayout();
 	int GetZIndex() const;
-	virtual glm::vec2 MeasureContent();
 	void MarkDirty();
+	void SetDirty();
+	virtual glm::vec2 MeasureContent();
 
 protected:
 	virtual void _Arrange() = 0;
@@ -30,5 +32,6 @@ protected:
 	bool _dirty = true;
 	PropertyRef<UILayout> _layout;
 	std::weak_ptr<UIContainer> _parent;
+	std::weak_ptr<UICanvas> _canvas;
 	Camera* _camera = nullptr;
 };

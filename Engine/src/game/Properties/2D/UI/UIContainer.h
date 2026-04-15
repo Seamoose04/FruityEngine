@@ -5,15 +5,18 @@ class UIContainer : public UIWidget {
 public:
 	void FromJSON(const json &j) override;
 	void Draw(Renderer &renderer) override;
-	void AddChild(std::shared_ptr<UIWidget> child);
 	void OnDestroy() override;
-	void RemoveChild(UIWidget* child);
-	void DirtyChildren();
-	glm::vec2 MeasureContent() override;
+	std::vector<UIWidget*> ActiveChildren() const;
+
+	const Sides& GetPadding() const;
+	void SetPadding(const Sides& padding);
+
+	virtual void AddChild(std::shared_ptr<UIWidget> child);
+	virtual void RemoveChild(UIWidget* child);
+	virtual glm::vec2 MeasureContent() override = 0;
 
 protected:
-	void _Arrange() override;
-	Direction _flow;
-	float _gap;
+	virtual void _Arrange() override;
 	std::vector<std::shared_ptr<UIWidget>> _children;
+	Sides _padding;
 };

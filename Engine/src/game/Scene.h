@@ -5,6 +5,7 @@
 #include "util/Flags.h"
 #include <memory>
 #include <vector>
+#include "game/Properties/2D/UI/UIInterfaces.h"
 
 enum class SceneFlags : unsigned long {
 	None = 0,

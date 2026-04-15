@@ -14,9 +14,7 @@ Window::Window(int w, int h, const std::string& title) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	size.Set({w, h});
-
-	_handle = glfwCreateWindow(size->x, size->y, title.c_str(), nullptr, nullptr);
+	_handle = glfwCreateWindow(w, h, title.c_str(), nullptr, nullptr);
 	if (!_handle) {
 		std::cerr << "Failed to create GLFW window\n";
 		glfwTerminate();
@@ -34,7 +32,11 @@ Window::Window(int w, int h, const std::string& title) {
 	glfwSetFramebufferSizeCallback(_handle, [](GLFWwindow* window, int w, int h) {
 		glViewport(0, 0, w, h);
 		auto self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-		self->size.Set({w, h});
+		self->onResize.Call(glm::vec2(w, h));
+	});
+	glfwSetCharCallback(_handle, [](GLFWwindow* window, unsigned int codepoint) {
+		auto self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+		self->onChar.Call(codepoint);
 	});
 	ShowCursor();
 	
@@ -58,7 +60,14 @@ bool Window::ShouldClose() const {
 }
 
 void Window::PollEvents() {
+	for (int i = 0; i < GLFW_KEY_LAST; i++) {
+		_prevKeys[i] = glfwGetKey(_handle, i);
+	}
+	for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++) {
+		_prevMouseButtons[i] = glfwGetMouseButton(_handle, i);
+	}
     glfwPollEvents();
+
 	double x, y;
 	glfwGetCursorPos(_handle, &x, &y);
 	_mousePos = glm::vec2((float)x, (float)y);
@@ -121,10 +130,18 @@ glm::vec2 Window::GetMousePos() const {
 	return _mousePos;
 }
 
+bool Window::IsKeyPressed(int key) const {
+    return glfwGetKey(_handle, key) == GLFW_PRESS;
+}
+
+bool Window::IsKeyJustPressed(int key) const {
+	return IsKeyPressed(key) && _prevKeys[key] == GLFW_RELEASE;
+}
+
 bool Window::IsMouseButtonPressed(int button) const {
 	return glfwGetMouseButton(_handle, button) == GLFW_PRESS;
 }
 
-bool Window::IsKeyPressed(int key) const {
-    return glfwGetKey(_handle, key) == GLFW_PRESS;
+bool Window::IsMouseButtonJustPressed(int button) const {
+	return IsMouseButtonPressed(button) && _prevMouseButtons[button] == GLFW_RELEASE;
 }

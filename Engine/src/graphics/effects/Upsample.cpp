@@ -1,11 +1,12 @@
 #include "Upsample.h"
 #include <glad/glad.h>
+#include "util/ShaderCache.h"
 
 static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/fx/";
 
 void UpsampleEffect::Init(int width, int height) {
     _output = Framebuffer(width, height, GL_RGBA16F);
-    _shader.Load(ENGINE_SHADER_PATH + "upsample.vert", ENGINE_SHADER_PATH + "upsample.frag");
+    _shader = ShaderCache::Instance().Get(ENGINE_SHADER_PATH + "upsample.vert", ENGINE_SHADER_PATH + "upsample.frag");
 }
 
 void UpsampleEffect::Execute() {
@@ -19,8 +20,8 @@ void UpsampleEffect::Execute() {
     glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
 
-    _shader.Use();
-    _shader.SetInt("u_Input", 0);
+    _shader->Use();
+    _shader->SetInt("u_Input", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, input->GetOutput()->GetColorTexture());

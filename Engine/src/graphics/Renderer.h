@@ -47,8 +47,8 @@ public:
     int GetHeight() const;
 	glm::vec2 GetSize() const;
 
-	Callback OnBeginFrame;
-	Callback OnEndFrame;
+	Callback<> OnBeginFrame;
+	Callback<> OnEndFrame;
 
 private:
 	void _FlushQueue();

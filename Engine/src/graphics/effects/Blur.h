@@ -13,5 +13,5 @@ private:
     int _passes;
     float _size = 1.0f;
     Framebuffer _pingPong[2];
-    Shader _shader;
+    std::shared_ptr<Shader> _shader;
 };

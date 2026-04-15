@@ -10,13 +10,13 @@ struct Size {
 		Percent,
 		Auto
 	};
-	inline static const EnumMap<Mode> _modeMap = {
+	inline static const EnumMap<Mode> modeMap = {
 		{ "Pixels", Mode::Pixels },
 		{ "Percent", Mode::Percent },
 		{ "Auto", Mode::Auto }
 	};
 	static Size FromJSON(const nlohmann::json& j) {
-		auto mode = _modeMap.strToEnum.at(j["mode"].get<std::string>());
+		auto mode = modeMap.strToEnum.at(j["mode"].get<std::string>());
 		float value = (mode != Mode::Auto) ? j["value"].get<float>() : 0.0f;
 		return { mode, value };
 	};
@@ -27,7 +27,6 @@ struct Size {
 struct Sides {
 	float top, right, bottom, left;
 	static Sides FromJSON(const nlohmann::json& j) {
-		Sides sides;
 		if (j.is_number()) {
 			float v = j.get<float>();
 			return { v, v, v, v };
@@ -39,6 +38,15 @@ struct Sides {
 			j.value("left", 0.0f)
 		};
 	};
+	static Sides Horizontal(float amount) {
+		return { 0.0f, amount, 0.0f, amount };
+	}
+	static Sides Vertical(float amount) {
+		return { amount, 0.0f, amount, 0.0f };
+	}
+	static Sides All(float amount) {
+		return { amount, amount, amount, amount };
+	}
 };
 
 struct Rect {

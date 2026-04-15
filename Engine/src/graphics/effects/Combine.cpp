@@ -1,5 +1,6 @@
 #include "Combine.h"
 
+#include "util/ShaderCache.h"
 #include <glad/glad.h>
 
 static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/fx/";
@@ -10,7 +11,7 @@ void CombineEffect::FromJSON(const json& data) {
 
 void CombineEffect::Init(int width, int height) {
     _output = Framebuffer(width, height, GL_RGBA16F);
-    _shader.Load(ENGINE_SHADER_PATH + "combine.vert", ENGINE_SHADER_PATH + "combine.frag");
+    _shader = ShaderCache::Instance().Get(ENGINE_SHADER_PATH + "combine.vert", ENGINE_SHADER_PATH + "combine.frag");
 }
 
 void CombineEffect::Execute() {
@@ -26,10 +27,10 @@ void CombineEffect::Execute() {
     glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
 
-    _shader.Use();
-    _shader.SetInt("u_InputA", 0);
-    _shader.SetInt("u_InputB", 1);
-    _shader.SetInt("u_Method", static_cast<int>(_method));
+    _shader->Use();
+    _shader->SetInt("u_InputA", 0);
+    _shader->SetInt("u_InputB", 1);
+    _shader->SetInt("u_Method", static_cast<int>(_method));
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, inputA->GetOutput()->GetColorTexture());

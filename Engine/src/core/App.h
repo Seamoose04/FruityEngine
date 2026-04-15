@@ -19,7 +19,7 @@ public:
 	void ProcessSceneFlags(Flags<SceneFlags> &flags);
 	Window& GetWindow();
 
-	Callback postRender;
+	Callback<> postRender;
 
 private:
 	Window _window;

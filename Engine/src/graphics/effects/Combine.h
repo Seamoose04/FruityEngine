@@ -14,7 +14,7 @@ public:
     void FromJSON(const json& data) override;
 
 private:
-    Shader _shader;
+    std::shared_ptr<Shader> _shader;
     Method _method;
     EnumMap<Method> _methodMap = {
         { "Add", Method::Add },

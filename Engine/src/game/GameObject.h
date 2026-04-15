@@ -18,10 +18,8 @@ public:
 	void OnResize(int width, int height);
 	void HandleInput(const Window &window, float dt);
 	void Render(Renderer &renderer);
-
 	void FromJSON(const json &data);
-	void AddProperty(std::shared_ptr<Property> property);
-
+	
 	const std::weak_ptr<GameObject>& GetParent() const;
 	const std::vector<std::shared_ptr<GameObject>>& GetChildren() const;
 	void AddChild(std::shared_ptr<GameObject> child);
@@ -32,12 +30,18 @@ public:
 	void SetActive(bool active);
 
 	const std::string& GetName() const;
+
+	std::shared_ptr<Property> AddProperty(const json& chunk);
+	template <typename T> requires std::derived_from<T, Property>
+	std::shared_ptr<T> AddProperty(const json& chunk);
+
 	template <typename T>
 	std::shared_ptr<T> GetProperty();
 
 private:
 	std::vector<std::shared_ptr<Property>> _properties;
 	std::weak_ptr<GameObject> _parent;
+	std::weak_ptr<Scene> _scene;
 	std::vector<std::shared_ptr<GameObject>> _children;
 	std::string _name;
 	bool _active;
@@ -51,4 +55,9 @@ std::shared_ptr<T> GameObject::GetProperty() {
 		}
 	}
 	return nullptr;
+}
+
+template <typename T> requires std::derived_from<T, Property>
+std::shared_ptr<T> GameObject::AddProperty(const json& chunk) {
+	return std::static_pointer_cast<T>(AddProperty(chunk));
 }

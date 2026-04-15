@@ -8,17 +8,36 @@ EditorScene& EditorScene::Instance() {
 	return instance;
 }
 
-void EditorScene::Load(const std::string& path) {
-	_scenePath = path;
-	auto pos = _scenePath.find_last_of("/");
-	std::string objectsPath = _scenePath.substr(0, pos + 1);
-
+void EditorScene::_Load() {
 	JSONLoader loader;
 	const json& j = loader.LoadJSON(_scenePath);
 	_objectPaths = j["objects"].get<std::vector<std::string>>();
 	for (auto& objPath : _objectPaths) {
-		_documents[objPath] = loader.LoadJSON(objectsPath + objPath);
+		_documents[objPath] = loader.LoadJSON((_workingDir / objPath).string());
 	}
+}
+
+void EditorScene::Load(const std::string& path) {
+	namespace fs = std::filesystem;
+
+	_scenePath = fs::absolute(path);
+	_sceneDir = _scenePath.parent_path();
+	_workingDir = fs::path(".working");
+
+	fs::create_directories(_workingDir);
+	fs::copy(_sceneDir, _workingDir, fs::copy_options::overwrite_existing | fs::copy_options::recursive);
+
+	_Load();
+}
+
+void EditorScene::Save() {
+	
+}
+
+void EditorScene::Revert() {
+	std::filesystem::copy(_sceneDir, _workingDir, std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
+
+	_Load();
 }
 
 json* EditorScene::_TraverseNode(json& node, std::vector<std::string>& segments, int index) {
@@ -61,3 +80,4 @@ const json& EditorScene::GetDocument(const std::string& document) const {
 const std::vector<std::string>& EditorScene::GetObjectPaths() const {
 	return _objectPaths;
 }
+

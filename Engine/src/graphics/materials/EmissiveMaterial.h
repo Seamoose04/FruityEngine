@@ -5,6 +5,7 @@
 
 class EmissiveMaterial : public Material {
 	void FromJSON(const json& j) override;
+	void Init() override;
 	void Apply() override;
 
 private:

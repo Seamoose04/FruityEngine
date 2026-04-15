@@ -1,5 +1,6 @@
 #include "Downsample.h"
 
+#include "util/ShaderCache.h"
 #include <glad/glad.h>
 
 static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/fx/";
@@ -10,7 +11,7 @@ void DownsampleEffect::FromJSON(const json& data) {
 
 void DownsampleEffect::Init(int width, int height) {
 	_output = Framebuffer((int)(width * _scale), (int)(height * _scale), GL_RGBA16F);
-	_shader.Load(ENGINE_SHADER_PATH + "downsample.vert", ENGINE_SHADER_PATH + "downsample.frag");
+	_shader = ShaderCache::Instance().Get(ENGINE_SHADER_PATH + "downsample.vert", ENGINE_SHADER_PATH + "downsample.frag");
 }
 
 void DownsampleEffect::Execute() {
@@ -24,8 +25,8 @@ void DownsampleEffect::Execute() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDisable(GL_DEPTH_TEST);
 
-	_shader.Use();
-	_shader.SetInt("u_Input", 0);
+	_shader->Use();
+	_shader->SetInt("u_Input", 0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, input->GetOutput()->GetColorTexture());

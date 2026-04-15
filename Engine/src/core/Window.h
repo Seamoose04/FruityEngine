@@ -1,7 +1,7 @@
 #pragma once
 
+#include "util/Callback.h"
 #include "util/Flags.h"
-#include "util/Observable.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -35,13 +35,18 @@ public:
 	glm::vec2 GetMousePos() const;
 
 	bool IsKeyPressed(int key) const;
+	bool IsKeyJustPressed(int key) const;
 	bool IsMouseButtonPressed(int button) const;
+	bool IsMouseButtonJustPressed(int button) const;
 
-	Observable<glm::vec2> size;
+	mutable Callback<glm::vec2> onResize;
+	mutable Callback<unsigned int> onChar;
 
 private:
 	GLFWwindow *_handle = nullptr;
 	glm::vec2 _mousePos = {0, 0};
-	
+	std::array<int, GLFW_KEY_LAST> _prevKeys{};
+	std::array<int, GLFW_MOUSE_BUTTON_LAST> _prevMouseButtons{};
+
 	Flags<WindowFlags> _flags;
 };

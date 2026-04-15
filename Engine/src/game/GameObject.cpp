@@ -16,21 +16,20 @@ void GameObject::FromJSON(const json& data) {
         }
 
 		property->SetGameObject(shared_from_this());
-        AddProperty(property);
+		_properties.push_back(property);
 
         property->FromJSON(value);
 	}
 }
 
-void GameObject::AddProperty(std::shared_ptr<Property> property) {
-    _properties.push_back(property);
-}
-
 void GameObject::OnCreate(std::weak_ptr<Scene> scene) {
-    for (auto& child : _children) {
+	_scene = scene;
+	auto children = _children;
+    for (auto& child : children) {
         child->OnCreate(scene);
     }
-    for (auto& prop : _properties) {
+	auto properties = _properties;
+    for (auto& prop : properties) {
         prop->OnCreate(scene);
     }
 }
@@ -51,11 +50,11 @@ void GameObject::HandleInput(const Window& window, float dt) {
 	if (!_active) {
 		return;
 	}
-    for (auto& prop : _properties) {
-        prop->HandleInput(window, dt);
-    }
     for (auto& child : _children) {
         child->HandleInput(window, dt);
+    }
+    for (auto& prop : _properties) {
+        prop->HandleInput(window, dt);
     }
 }
 
@@ -152,4 +151,20 @@ GameObject* GameObject::GetChildByPath(const std::string& path) const {
 
 const std::string& GameObject::GetName() const {
 	return _name;
+}
+
+std::shared_ptr<Property> GameObject::AddProperty(const json& chunk) {
+	auto property = Registry<Property>::Instance().Create(chunk.begin().key());
+	if (!property) {
+		std::cerr << "Unknown property type: " << chunk.begin().key() << "\n";
+		std::abort();
+	}
+	
+	property->SetGameObject(shared_from_this());
+	_properties.push_back(property);
+
+	property->FromJSON(chunk.begin().value());
+	property->OnCreate(_scene);
+
+	return property;
 }

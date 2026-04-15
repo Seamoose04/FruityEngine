@@ -10,9 +10,12 @@ public:
 	void FromJSON(const json &j) override;
 	void Draw(Renderer &renderer) override;
 	void OnCreate(std::weak_ptr<Scene> scene) override;
+	glm::vec2 MeasureContent() override;
+	void SetText(const std::string& text);
+	void SetTextColor(const glm::vec4& color);
+	glm::vec2 MeasureText(const std::string& text) const;
 
 private:
-	glm::vec2 MeasureContent() override;
 	void _Arrange() override;
 	void _BuildMesh();
 

@@ -9,6 +9,7 @@ class EditorScene {
 public:
 	void Load(const std::string& path);
 	void Save();
+	void Revert();
 
 	static EditorScene& Instance();
 
@@ -18,8 +19,12 @@ public:
 
 private:
 	json* _TraverseNode(json& node, std::vector<std::string>& segments, int index);
+	void _Load();
 
-	std::string _scenePath;
+	std::filesystem::path _scenePath;
+	std::filesystem::path _sceneDir;
+	std::filesystem::path _workingDir;
+
 	std::vector<std::string> _objectPaths;
 	std::unordered_map<std::string, json> _documents;
 };

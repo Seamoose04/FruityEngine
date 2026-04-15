@@ -1,13 +1,17 @@
 #include "EmissiveMaterial.h"
+#include "util/ShaderCache.h"
 
 static const std::string ENGINE_MATERIAL_SHADER_PATH = "../../Engine/shaders/materials/";
 
 void EmissiveMaterial::FromJSON(const json& j) {
-	_shader = std::make_shared<Shader>();
-	_shader->Load(ENGINE_MATERIAL_SHADER_PATH + "emissive.vert", ENGINE_MATERIAL_SHADER_PATH + "emissive.frag");
+	Init();
 
 	_color = glm::vec3(j["color"][0], j["color"][1], j["color"][2]);
 	_intensity = j["intensity"];
+}
+
+void EmissiveMaterial::Init() {
+	_shader = ShaderCache::Instance().Get(ENGINE_MATERIAL_SHADER_PATH + "emissive.vert", ENGINE_MATERIAL_SHADER_PATH + "emissive.frag");
 }
 
 void EmissiveMaterial::Apply() {

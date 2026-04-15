@@ -10,6 +10,6 @@ public:
 	void Resize(int width, int height) override;
 
 private:
-	Shader _shader;
+	std::shared_ptr<Shader> _shader;
 	float _scale = 0.5f;
 };

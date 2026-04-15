@@ -1,7 +1,6 @@
 #pragma once
 
 #include "graphics/PostProcessEffect.h"
-#include "graphics/Shader.h"
 
 class RenderToScreenEffect : public PostProcessEffect {
 public:
@@ -14,5 +13,5 @@ public:
 private:
     int _width = 0;
     int _height = 0;
-    Shader _shader;
+    std::shared_ptr<Shader> _shader;
 };

@@ -12,6 +12,7 @@ class Material {
 public:
 	virtual void FromJSON(const json& j) = 0;
 	virtual void Apply() = 0;
+	virtual void Init() = 0;
 	virtual ~Material() = default;
 	std::shared_ptr<Shader> GetShader();
 

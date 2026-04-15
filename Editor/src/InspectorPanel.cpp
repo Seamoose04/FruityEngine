@@ -1,8 +1,7 @@
 #include "InspectorPanel.h"
 #include "game/Scene.h"
 #include "EditorScene.h"
-#include "game/Properties/2D/UI/UIButton.h"
-#include <iostream>
+#include "game/Properties/2D/UI/UIInput.h"
 
 void InspectorPanel::FromJSON(const json& data) { }
 
@@ -89,73 +88,93 @@ void InspectorPanel::_Rebuild() {
 		}
 	
 		for (const auto& [key, value] : node->items()) {
-			json header = {
-				{ "type", "GameObject" },
-				{ "name", key + "_header" },
-				{ "properties", {
-					{ "UILayout", {
-						{ "width", { { "mode", "Percent" }, { "value", 100 } } },
-						{ "height", { { "mode", "Auto" } } }
-					}},
-					{ "UIButton", {
-						{ "_placeholder", true }
-					}},
-				}},
-				{ "children", {
-					{
-						{ "type", "GameObject" },
-						{ "name", "buttonLabel" },
-						{ "properties", {
-							{ "UILayout", {
-								{ "width", { { "mode", "Percent" }, { "value", 100 } } },
-								{ "height", { { "mode", "Auto" } } }
-							}},
-							{ "UILabel", {
-								{ "color", { 1, 1, 1, 1 } },
-								{ "text", key },
-								{ "font", "assets/textures/fonts/atlas" },
-								{ "fontSize", 20 },
-								{ "hAlign", "Start" }
-							}}
-						}}
-					}
-				}}
+			json dropdown = {
+			    { "type", "GameObject" },
+			    { "name", key },
+			    { "properties", {
+			        { "UILayout", {
+			            { "width", { { "mode", "Percent" }, { "value", 100 } } },
+			            { "height", { { "mode", "Auto" } } }
+			        }},
+			        { "UIDropdown", {
+			            { "open", false },
+			            { "bar", {
+			                { "type", "GameObject" },
+			                { "name", "bar" },
+			                { "properties", {
+			                    { "UILayout", {
+			                        { "width", { { "mode", "Percent" }, { "value", 100 } } },
+			                        { "height", { { "mode", "Auto" } } }
+			                    }},
+			                    { "UIButton", {
+									{ "_placeholder", true }
+								}}
+			                }},
+			                { "children", {{
+			                    { "type", "GameObject" },
+			                    { "name", "label" },
+			                    { "properties", {
+			                        { "UILayout", {
+			                            { "width", { { "mode", "Percent" }, { "value", 100 } } },
+			                            { "height", { { "mode", "Auto" } } }
+			                        }},
+			                        { "UILabel", {
+			                            { "color", { 1, 1, 1, 1 } },
+			                            { "text", key },
+			                            { "font", "assets/textures/fonts/atlas" },
+			                            { "fontSize", 20 },
+			                            { "hAlign", "Start" }
+			                        }}
+			                    }}
+			                }}}
+			            }},
+			            { "body", {
+			                { "type", "GameObject" },
+			                { "name", "body" },
+			                { "properties", {
+			                    { "UILayout", {
+			                        { "width", { { "mode", "Percent" }, { "value", 100 } } },
+			                        { "height", { { "mode", "Auto" } } }
+			                    }},
+			                    { "UIPanel", {
+			                        { "color", { 0.15, 0.15, 0.45, 1 } },
+			                        { "flow", "Vertical" },
+			                        { "gap", 2 }
+			                    }}
+			                }},
+			                { "children", {{
+								{ "type", "GameObject" },
+								{ "name", "value" },
+								{ "properties", {
+								    { "UILayout", {
+								        { "width", { { "mode", "Percent" }, { "value", 100 } } },
+								        { "height", { { "mode", "Auto" } } }
+								    }},
+								    { "UIInput", {
+								        { "text", value.dump() },
+								        { "font", "assets/textures/fonts/atlas" },
+								        { "fontSize", 16 },
+								        { "textAlign", "Start" }
+								    }}
+								}}
+			                }}}
+			            }}
+			        }}
+			    }}
 			};
-
-			json content = {
-				{ "type", "GameObject" },
-				{ "name", key + "_content" },
-				{ "properties", {
-					{ "UILayout", {
-						{ "width", { { "mode", "Percent" }, { "value", 100 } } },
-						{ "height", { { "mode", "Auto" } } },
-					}},
-					{ "UIPanel", {
-						{ "color", { 0.15, 0.15, 0.45, 1 } },
-						{ "flow", "Vertical" },
-						{ "gap", 2 }
-					}},
-					{ "UILabel", {
-						{ "color", { 0.8, 0.8, 0.8, 1 } },
-						{ "text", value.dump() },
-						{ "font", "assets/textures/fonts/atlas" },
-						{ "fontSize", 16 },
-						{ "hAlign", "Start" }
-					}}
-				}}
-			};
-
-			scene->Instantiate(header, panelGO);
-			GameObject* contentGO = scene->Instantiate(content, panelGO);
-
-			GameObject* headerGO = panelGO->GetChildByName(key + "_header");
-			if (headerGO) {
-				UIButton* button = headerGO->GetProperty<UIButton>().get();
-				if (button) {
-					std::cout << "found a button" << std::endl;
-					button->onClick.Subscribe([contentGO]() {
-						std::cout << "click!" << std::endl;
-						contentGO->SetActive(!contentGO->GetActive());
+			GameObject* dropdownGO = scene->Instantiate(dropdown, panelGO);
+			GameObject* valueGO = dropdownGO->GetChildByPath("body/value");
+			if (valueGO) {
+				if (auto input = valueGO->GetProperty<UIInput>()) {
+					input->onCommit.Subscribe([filePath, nodePath, key](const std::string& newVal) {
+						json* node = EditorScene::Instance().GetNodeAtPath(filePath, nodePath);
+						if (node) {
+							try {
+								(*node)[key] = json::parse(newVal);
+							} catch (const json::parse_error& e) {
+								std::cerr << "Invalid JSON for key '" << key << "': " << e.what() << std::endl;
+							}
+						}
 					});
 				}
 			}

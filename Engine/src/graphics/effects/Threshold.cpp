@@ -1,5 +1,6 @@
 #include "Threshold.h"
 
+#include "util/ShaderCache.h"
 #include <glad/glad.h>
 
 static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/fx/";
@@ -11,7 +12,7 @@ void ThresholdEffect::FromJSON(const json& data) {
 
 void ThresholdEffect::Init(int width, int height) {
     _output = Framebuffer(width, height, GL_RGBA16F);
-    _shader.Load(ENGINE_SHADER_PATH + "threshold.vert", ENGINE_SHADER_PATH + "threshold.frag");
+    _shader = ShaderCache::Instance().Get(ENGINE_SHADER_PATH + "threshold.vert", ENGINE_SHADER_PATH + "threshold.frag");
 }
 
 void ThresholdEffect::Execute() {
@@ -25,10 +26,10 @@ void ThresholdEffect::Execute() {
     glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
 
-    _shader.Use();
-    _shader.SetInt("u_Input", 0);
-    _shader.SetFloat("u_Threshold", _threshold);
-    _shader.SetFloat("u_Knee", _knee);
+    _shader->Use();
+    _shader->SetInt("u_Input", 0);
+    _shader->SetFloat("u_Threshold", _threshold);
+    _shader->SetFloat("u_Knee", _knee);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, input->GetOutput()->GetColorTexture());

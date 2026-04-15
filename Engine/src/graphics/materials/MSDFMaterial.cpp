@@ -1,15 +1,15 @@
 #include "MSDFMaterial.h"
 #include <iostream>
+#include "util/ShaderCache.h"
 
-static const std::string ENGINE_SHADER_PATH = "../../Engine/shaders/materials/";
+static const std::string ENGINE_MATERIAL_SHADER_PATH = "../../Engine/shaders/materials/";
 
 void MSDFMaterial::FromJSON(const json& j) {
 	std::cerr << "[MSDFMaterial] cannot be loaded from JSON." << std::endl;
 }
 
 void MSDFMaterial::Init() {
-	_shader = std::make_shared<Shader>();
-	_shader->Load(ENGINE_SHADER_PATH + "msdf.vert", ENGINE_SHADER_PATH + "msdf.frag");
+	_shader = ShaderCache::Instance().Get(ENGINE_MATERIAL_SHADER_PATH + "msdf.vert", ENGINE_MATERIAL_SHADER_PATH + "msdf.frag");
 }
 
 void MSDFMaterial::SetAtlas(Texture* atlas) {

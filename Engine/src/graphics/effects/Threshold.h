@@ -11,5 +11,5 @@ public:
 private:
     float _threshold = 1.0f;
     float _knee = 0.0f;
-    Shader _shader;
+    std::shared_ptr<Shader> _shader;
 };

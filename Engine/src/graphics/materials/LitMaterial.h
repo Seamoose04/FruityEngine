@@ -8,6 +8,7 @@ class LitMaterial : public Material {
 public:
 	void FromJSON(const json& j) override;
 	void Apply() override;
+	void Init() override;
 
 private:
 	glm::vec3 _color;
