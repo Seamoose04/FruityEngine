@@ -51,7 +51,7 @@ void UIPanel::_Arrange() {
 		case Direction::Vertical: {
 			float cursor = inner.y;
 			for (auto& child : ActiveChildren()) {
-				Rect childAvailable = { inner.x, cursor, inner.width, inner.height - (inner.y - cursor) };
+				Rect childAvailable = { inner.x, cursor, inner.width, cursor - (inner.y - inner.height) };
 				child->Arrange(childAvailable);
 				cursor -= child->GetLayout()->GetComputedRect().height + _gap;
 			}
@@ -60,7 +60,7 @@ void UIPanel::_Arrange() {
 		case Direction::Horizontal: {
 			float cursor = inner.x;
 			for (auto& child : ActiveChildren()) {
-				Rect childAvailable = { cursor, inner.y, inner.width - (cursor - inner.x), inner.height };
+				Rect childAvailable = { cursor, inner.y, cursor - (inner.x - inner.width), inner.height };
 				child->Arrange(childAvailable);
 				cursor += child->GetLayout()->GetComputedRect().width + _gap;
 			}

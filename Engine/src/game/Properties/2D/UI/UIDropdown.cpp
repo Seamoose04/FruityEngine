@@ -43,18 +43,14 @@ void UIDropdown::_Arrange() {
 		computed.height - _padding.top - _padding.bottom
 	};
 
-	glm::vec2 barSize = _bar->MeasureContent();
-
-	Rect barRect = inner;
-	barRect.height = barSize.y;
-
-	Rect bodyRect = inner;
-	bodyRect.y -= barSize.y;
-	bodyRect.height = inner.height - barSize.y;
-
 	_bar->SetDirty();
-	_bar->Arrange(barRect);
+	_bar->Arrange(inner);
+	float barHeight = _bar->GetLayout()->GetComputedRect().height;
+
 	if (_open) {
+		Rect bodyRect = inner;
+		bodyRect.y -= barHeight;
+		bodyRect.height = inner.height - barHeight;
 		_body->SetDirty();
 		_body->Arrange(bodyRect);
 	}
