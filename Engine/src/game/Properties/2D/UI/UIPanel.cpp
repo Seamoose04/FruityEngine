@@ -103,7 +103,7 @@ void UIPanel::Draw(Renderer& renderer) {
 
 glm::vec2 UIPanel::MeasureContent() {
 	if (ActiveChildren().empty()) {
-		return glm::vec2(0.0f);
+		return glm::vec2(_padding.left + _padding.right, _padding.top + _padding.right);
 	}
 	switch (_flow) {
 		case Direction::Vertical: {
@@ -116,7 +116,7 @@ glm::vec2 UIPanel::MeasureContent() {
 				totalHeight += childSize.y;
 			}
 			totalHeight += _gap * (ActiveChildren().size() - 1);
-			return glm::vec2(maxWidth, totalHeight);
+			return glm::vec2(maxWidth + _padding.left + _padding.right, totalHeight + _padding.top + _padding.bottom);
 		}
 		case Direction::Horizontal: {
 			float totalWidth = 0;
@@ -128,7 +128,7 @@ glm::vec2 UIPanel::MeasureContent() {
 				maxHeight = std::max(maxHeight, childSize.y);
 			}
 			totalWidth += _gap * (ActiveChildren().size() - 1);
-			return glm::vec2(totalWidth, maxHeight);
+			return glm::vec2(totalWidth + _padding.left + _padding.right, maxHeight + _padding.top + _padding.bottom);
 		}
 		case Direction::Depth: {
 			float maxWidth = 0;
@@ -139,7 +139,7 @@ glm::vec2 UIPanel::MeasureContent() {
 				maxWidth = std::max(maxWidth, childSize.x);
 				maxHeight = std::max(maxHeight, childSize.y);
 			}
-			return glm::vec2(maxWidth, maxHeight);
+			return glm::vec2(maxWidth + _padding.left + _padding.right, maxHeight + _padding.top + _padding.bottom);
 		}
 	}
 	std::cerr << "[UIPanel::MeasureContent] invalid flow." << std::endl;

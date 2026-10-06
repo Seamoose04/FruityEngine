@@ -19,13 +19,14 @@ private:
 	void _Arrange() override;
 	void _BuildMesh();
 
+	Sides _padding;
 	std::string _fontPath;
 	std::shared_ptr<Font> _font;
 	std::string _text;
 	float _fontSize;
 	Align _hAlign;
 	glm::vec4 _color;
-	Mesh _mesh;
 	std::shared_ptr<MSDFMaterial> _material = std::make_shared<MSDFMaterial>();
+	Mesh _mesh;
 	bool _meshDirty = true;
 };

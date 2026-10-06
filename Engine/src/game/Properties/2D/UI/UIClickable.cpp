@@ -35,7 +35,7 @@ bool UIClickable::_Contains(glm::vec2 mousePos) const {
 
 glm::vec2 UIClickable::MeasureContent() {
 	if (ActiveChildren().empty()) {
-		return glm::vec2(0.0f);
+		return glm::vec2(_padding.left + _padding.right, _padding.top + _padding.bottom);
 	}
 	float maxWidth = 0;
 	float maxHeight = 0;
@@ -45,7 +45,7 @@ glm::vec2 UIClickable::MeasureContent() {
 		maxWidth = std::max(maxWidth, childSize.x);
 		maxHeight = std::max(maxHeight, childSize.y);
 	}
-	return glm::vec2(maxWidth, maxHeight);
+	return glm::vec2(maxWidth + _padding.left + _padding.right, maxHeight + _padding.top + _padding.bottom);
 }
 
 void UIClickable::_Arrange() {

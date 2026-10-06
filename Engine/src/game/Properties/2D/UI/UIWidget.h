@@ -24,6 +24,9 @@ public:
 	void SetDirty();
 	virtual glm::vec2 MeasureContent();
 
+	float ResolveWidth(float availableWidth);
+	float ResolveHeight(float availableHeight);
+
 protected:
 	virtual void _Arrange() = 0;
 	float _ResolveAxis(Size size, float available, float measured = 0.0f);

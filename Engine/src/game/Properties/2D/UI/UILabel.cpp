@@ -19,6 +19,11 @@ void UILabel::FromJSON(const json& j) {
 		_color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 	_hAlign = j.contains("hAlign") ? AlignMap.strToEnum.at(j["hAlign"]) : Align::Start;
+	if (j.contains("padding")) {
+		_padding = Sides::FromJSON(j["padding"]);
+	} else {
+		_padding = Sides::All(_fontSize / 8);
+	}
 }
 
 void UILabel::OnCreate(std::weak_ptr<Scene> scene) {
@@ -47,9 +52,9 @@ void UILabel::_Arrange() {
 
 glm::vec2 UILabel::MeasureContent() {
 	if (!_font) {
-		return glm::vec2(0, 0);
+		return glm::vec2(_padding.left + _padding.right, _padding.top + _padding.bottom);
 	}
-	return _font->MeasureText(_text, _fontSize);
+	return _font->MeasureText(_text, _fontSize) + glm::vec2(_padding.left + _padding.right, _padding.top + _padding.bottom);
 }
 
 void UILabel::Draw(Renderer& renderer) {
@@ -70,13 +75,13 @@ void UILabel::_BuildMesh() {
 	const Rect& rect = _layout->GetComputedRect();
 	glm::vec2 measured = _font->MeasureText(_text, _fontSize);
 	
-	float startX;
+	float startX = _padding.left;
 	switch (_hAlign) {
-		case Align::Start: startX = rect.x; break;
-		case Align::Center: startX = rect.x + (rect.width - measured.x) / 2.0f; break;
-		case Align::End: startX = rect.x + rect.width - measured.x; break;
+		case Align::Start: startX += rect.x; break;
+		case Align::Center: startX += rect.x + (rect.width - measured.x) / 2.0f; break;
+		case Align::End: startX += rect.x + rect.width - measured.x; break;
 	}
-	float baseY = rect.y;
+	float baseY = rect.y + _padding.top;
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;

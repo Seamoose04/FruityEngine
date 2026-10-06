@@ -29,9 +29,11 @@ void UIDropdown::OnCreate(std::weak_ptr<Scene> weakScene) {
 }
 
 glm::vec2 UIDropdown::MeasureContent() {
-	glm::vec2 barSize = _bar->MeasureContent();
+	glm::vec2 barSize = { _bar->ResolveWidth(0.0f), _bar->ResolveHeight(0.0f) };
 	glm::vec2 bodySize = _body->MeasureContent();
-	return _open ? glm::vec2(std::max(barSize.x, bodySize.x), barSize.y + bodySize.y) : barSize;
+	return _open
+		? glm::vec2(std::max(barSize.x, bodySize.x), barSize.y + bodySize.y)
+		: barSize;
 }
 
 void UIDropdown::_Arrange() {

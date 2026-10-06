@@ -111,54 +111,42 @@ void InspectorPanel::_Rebuild() {
 									{ "_placeholder", true }
 								}}
 							}},
-							{ "children", {{
-								{ "type", "GameObject" },
-								{ "name", "bar_content" },
-								{ "properties", {
-									{ "UILayout", {
-										{ "width", { { "mode", "Percent" }, { "value", 100 } } },
-										{ "height", { { "mode", "Percent" }, { "value", 100 } } }
+							{ "children", {
+								{
+									{ "type", "GameObject" },
+									{ "name", "bar_content" },
+									{ "properties", {
+										{ "UILayout", {
+											{ "width", { { "mode", "Percent" }, { "value", 100 } } },
+											{ "height", { { "mode", "Percent" }, { "value", 100 } } }
+										}},
+										{ "UIPanel", {
+											{ "color", { 0.14, 0.14, 0.22, 1.0 } },
+											{ "flow", "Horizontal" },
+											{ "padding", { { "top", 4 }, { "bottom", 4 }, { "left", 8 }, { "right", 8 } } }
+										}}
 									}},
-									{ "UIPanel", {
-										{ "color", { 0.14, 0.14, 0.22, 1.0 } },
-										{ "flow", "Horizontal" },
-										{ "gap", 6 },
-										{ "padding", { { "top", 4 }, { "bottom", 4 }, { "left", 8 }, { "right", 8 } } }
+									{ "children", {
+										{
+											{ "type", "GameObject" },
+											{ "name", "label" },
+											{ "properties", {
+												{ "UILayout", {
+													{ "width", { { "mode", "Auto" } } },
+													{ "height", { { "mode", "Auto" } } }
+												}},
+												{ "UILabel", {
+													{ "color", { 0.85, 0.85, 0.9, 1.0 } },
+													{ "text", key },
+													{ "font", "assets/textures/fonts/atlas" },
+													{ "fontSize", 16 },
+													{ "hAlign", "Start" }
+												}}
+											}}
+										}
 									}}
-								}},
-								{ "children", {
-									{
-										{ "type", "GameObject" },
-										{ "name", "indicator" },
-										{ "properties", {
-											{ "UILayout", {
-												{ "width", { { "mode", "Pixels" }, { "value", 3 } } },
-												{ "height", { { "mode", "Pixels" }, { "value", 14 } } }
-											}},
-											{ "UIIcon", {
-												{ "color", { 0.0, 0.7, 0.9, 1.0 } }
-											}}
-										}}
-									},
-									{
-										{ "type", "GameObject" },
-										{ "name", "label" },
-										{ "properties", {
-											{ "UILayout", {
-												{ "width", { { "mode", "Auto" } } },
-												{ "height", { { "mode", "Auto" } } }
-											}},
-											{ "UILabel", {
-												{ "color", { 0.85, 0.85, 0.9, 1.0 } },
-												{ "text", key },
-												{ "font", "assets/textures/fonts/atlas" },
-												{ "fontSize", 16 },
-												{ "hAlign", "Start" }
-											}}
-										}}
-									}
-								}}
-							}}}
+								}
+							}}
 						}},
 						{ "body", {
 							{ "type", "GameObject" },
@@ -172,27 +160,29 @@ void InspectorPanel::_Rebuild() {
 									{ "color", { 0.11, 0.11, 0.18, 1.0 } },
 									{ "flow", "Vertical" },
 									{ "gap", 2 },
-									{ "padding", { { "top", 4 }, { "bottom", 4 }, { "left", 16 }, { "right", 4 } } }
+									{ "padding", { { "top", 4 }, { "bottom", 4 }, { "left", 8 }, { "right", 4 } } }
 								}}
 							}},
-							{ "children", {{
-								{ "type", "GameObject" },
-								{ "name", "value" },
-								{ "properties", {
-									{ "UILayout", {
-										{ "width", { { "mode", "Percent" }, { "value", 100 } } },
-										{ "height", { { "mode", "Auto" } } }
-									}},
-									{ "UIInput", {
-										{ "text", value.dump() },
-										{ "font", "assets/textures/fonts/atlas" },
-										{ "fontSize", 14 },
-										{ "textAlign", "Start" },
-										{ "color", { 0.18, 0.18, 0.25, 1.0 } },
-										{ "textColor", { 0.75, 0.75, 0.8, 1.0 } }
+							{ "children", {
+								{
+									{ "type", "GameObject" },
+									{ "name", "value" },
+									{ "properties", {
+										{ "UILayout", {
+											{ "width", { { "mode", "Percent" }, { "value", 100 } } },
+											{ "height", { { "mode", "Auto" } } }
+										}},
+										{ "UIInput", {
+											{ "text", value.dump() },
+											{ "font", "assets/textures/fonts/atlas" },
+											{ "fontSize", 14 },
+											{ "textAlign", "Start" },
+											{ "color", { 0.18, 0.18, 0.25, 1.0 } },
+											{ "textColor", { 0.75, 0.75, 0.8, 1.0 } }
+										}}
 									}}
-								}}
-							}}}
+								}
+							}}
 						}}
 					}}
 				}}

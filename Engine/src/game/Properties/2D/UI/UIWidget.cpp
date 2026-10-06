@@ -77,8 +77,8 @@ void UIWidget::Arrange(Rect availableRect) {
 		availableRect.height - margin.top - margin.bottom
 	};
 	glm::vec2 measured = MeasureContent();
-	float w = _ResolveAxis(_layout->GetWidth(), margined.width, measured.x);
-	float h = _ResolveAxis(_layout->GetHeight(), margined.height, measured.y);
+	float w = ResolveWidth(margined.width);
+	float h = ResolveHeight(margined.height);
 	_layout->GetComputedRect() = { margined.x, margined.y, w, h };
 	_Arrange();
 	_dirty = false;
@@ -86,6 +86,14 @@ void UIWidget::Arrange(Rect availableRect) {
 
 glm::vec2 UIWidget::MeasureContent() {
 	return glm::vec2({ 0, 0 });
+}
+
+float UIWidget::ResolveWidth(float availableWidth) {
+	return _ResolveAxis(_layout->GetWidth(), availableWidth, MeasureContent().x);
+}
+
+float UIWidget::ResolveHeight(float availableHeight) {
+	return _ResolveAxis(_layout->GetHeight(), availableHeight, MeasureContent().y);
 }
 
 float UIWidget::_ResolveAxis(Size size, float available, float measured) {
