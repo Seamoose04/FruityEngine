@@ -1,6 +1,6 @@
 # UIPanel
 
-A rectangular UI container that arranges its child widgets either vertically, horizontally, or stacked by depth. It renders a flat-colored quad at its computed rect and respects padding when laying out children. Extends `UIWidget` — all `UIWidget` JSON fields apply and are read automatically.
+A rectangular UI container that arranges its child widgets either vertically, horizontally, or stacked by depth. It renders a flat-colored quad at its computed rect and respects padding when laying out children. Extends `UIContainer` — all `UIContainer` JSON fields apply and are read automatically.
 
 **PropertyRef Dependencies:** Requires a sibling `UILayout` (read via `PropertyRef`). Registers with the nearest ancestor `UICanvas` or parent `UIWidget` automatically on creation.
 
