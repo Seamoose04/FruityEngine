@@ -100,6 +100,7 @@ Here’s the **correct layout** expected by the scene loader:
 ```json
 {
   "type": "GameObject",
+  "name": "ObjectName",
   "properties": [
     {
       "type": "Transform",

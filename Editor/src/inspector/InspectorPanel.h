@@ -1,7 +1,7 @@
 #pragma once
 
 #include "game/Property.h"
-#include "HierarchyController.h"
+#include "hierarchy/HierarchyController.h"
 
 class InspectorPanel : public Property {
 public:

@@ -1,5 +1,5 @@
 #include "game/Property.h"
-#include "HierarchyController.h"
+#include "hierarchy/HierarchyController.h"
 #include "game/PropertyRef.h"
 
 class HierarchyPanel : public Property {

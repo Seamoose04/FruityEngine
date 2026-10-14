@@ -1,7 +1,7 @@
 #include "HierarchyController.h"
 #include "game/ActionRegistry.h"
 #include "game/GameObject.h"
-#include "HierarchyNode.h"
+#include "hierarchy/HierarchyNode.h"
 
 void HierarchyController::FromJSON(const json& data) { }
 

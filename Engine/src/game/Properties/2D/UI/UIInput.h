@@ -16,6 +16,8 @@ public:
 	void OnFocus() override;
 	void OnBlur() override;
 
+	void SetText(const std::string& text);
+
 	Callback<std::string> onChange, onCommit;
 
 private:

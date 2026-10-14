@@ -140,6 +140,10 @@ void UIInput::OnCreate(std::weak_ptr<Scene> weakScene) {
 	});
 }
 
+void UIInput::SetText(const std::string& text) {
+	_inputHandler->SetValue(text);
+}
+
 void UIInput::OnFocus() {
 	_inputHandler->SetFocused(true);
 	_bg->SetColor(glm::vec4(1.0f));

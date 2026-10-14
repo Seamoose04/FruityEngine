@@ -1,0 +1,27 @@
+{
+	"type": "GameObject",
+	"name": "panel",
+	"properties": {
+		"UILayout": {
+			"width": {
+				"mode": "Percent",
+				"value": 100
+			},
+			"height": {
+				"mode": "Percent",
+				"value": 100
+			}
+		},
+		"UIPanel": {
+			"color": [0.08, 0.08, 0.12, 1.0],
+			"flow": "Vertical",
+			"gap": 4,
+			"padding": {
+				"top": 6,
+				"bottom": 6,
+				"left": 6,
+				"right": 6
+			}
+		}
+	}
+}
