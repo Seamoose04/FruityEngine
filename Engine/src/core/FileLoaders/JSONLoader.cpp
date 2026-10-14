@@ -20,6 +20,10 @@ json JSONLoader::LoadJSON(const std::string& path) {
 	return j;
 }
 
+json JSONLoader::LoadChunk(const json& j) {
+	return _ResolveImports(j, std::filesystem::path("assets/chunks"));
+}
+
 json JSONLoader::_ResolveImports(const json& j, const std::filesystem::path& currentDir, const json& overrides) {
 	json result;
 	if (j.is_array()) {

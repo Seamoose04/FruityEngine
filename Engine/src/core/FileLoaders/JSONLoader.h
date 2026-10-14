@@ -11,6 +11,7 @@ public:
 
     void* Load(const std::string& path) override;
 	json LoadJSON(const std::string& path);
+	json LoadChunk(const json& j);
 
 private:
 	json _ResolveImports(const json& j, const std::filesystem::path& currentDir, const json& overrides = {});
