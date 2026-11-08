@@ -1,0 +1,23 @@
+{
+	"type": "GameObject",
+	"name": "field",
+	"properties": {
+		"UILayout": {
+			"width": {
+				"mode": "Percent",
+				"value": 100
+			},
+			"height": {
+				"mode": "Auto"
+			}
+		},
+		"UIIntInput": {
+			"text": "PLACEHOLDER",
+			"font": "assets/textures/fonts/atlas",
+			"fontSize": 14,
+			"textAlign": "Start",
+			"color": [0.18, 0.18, 0.25, 1.0],
+			"textColor": [0.75, 0.75, 0.8, 1.0]
+		}
+	}
+}

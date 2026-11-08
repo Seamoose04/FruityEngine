@@ -20,15 +20,18 @@ public:
 
 	Callback<std::string> onChange, onCommit;
 
+protected:
+	virtual void _InitInputHandler();
+	std::string _initialText;
+	std::shared_ptr<InputHandler> _inputHandler;
+
 private:
 	std::string _initialTextAlign;
-	std::string _initialText;
 	std::array<float, 4> _initialColor;
 	std::array<float, 4> _initialTextColor;
 	float _initialFontSize;
 	std::string _initialFont;
 	std::shared_ptr<UIPanel> _bg;
 	std::shared_ptr<UILabel> _label;
-	std::shared_ptr<InputHandler> _inputHandler;
 	std::shared_ptr<UIIcon> _cursor;
 };

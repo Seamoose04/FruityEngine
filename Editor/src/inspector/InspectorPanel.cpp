@@ -59,7 +59,7 @@ void InspectorPanel::_Rebuild() {
 	}
 
 	JSONLoader loader;
-	json panel = loader.LoadChunk({{ "$import", "InspectorPanel.json" }});
+	json panel = loader.LoadChunk({{ "$import", "Inspector/InspectorPanel.json" }});
 	GameObject* panelGO = scene->Instantiate(panel, self.get());
 
 	if (auto controller = _controller.lock()) {
@@ -77,7 +77,7 @@ void InspectorPanel::_Rebuild() {
 
 		for (const auto& [key, value] : node->items()) {
 			json item = loader.LoadChunk({
-				{ "$import", "InspectorItem.json" },
+				{ "$import", "Inspector/InspectorItem.json" },
 				{ "$override", {
 					{ "name", key }
 				}}

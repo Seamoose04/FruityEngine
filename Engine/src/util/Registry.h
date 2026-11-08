@@ -43,20 +43,3 @@ private:
         };                                                                  \
         static const DerivedType##__AutoRegistrar global_##DerivedType##_registrar; \
     }
-
-// Convenience for scripts
-#define REGISTER_SCRIPT(DerivedType) REGISTER_TYPE(Script, DerivedType)
-
-// Optional: custom name if you ever need it
-#define REGISTER_NAMED_TYPE(BaseType, DerivedType, NameLiteral)             \
-    namespace {                                                             \
-        struct DerivedType##__AutoRegistrarNamed {                          \
-            DerivedType##__AutoRegistrarNamed() {                           \
-                (void)Registry<BaseType>::Instance().Register(              \
-                    NameLiteral,                                            \
-                    [] { return std::make_shared<DerivedType>(); }          \
-                );                                                          \
-            }                                                               \
-        };                                                                  \
-        static const DerivedType##__AutoRegistrarNamed global_##DerivedType##_registrar_named; \
-    }

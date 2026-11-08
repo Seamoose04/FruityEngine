@@ -1,15 +1,11 @@
 #pragma once
-#include <functional>
-#include <vector>
-#include <algorithm>
+
+#include "util/Callback.h"
 
 template<typename T>
 class Observable {
 public:
-    using Callback = std::function<void(const T&)>;
-
-    Observable() = default;
-    explicit Observable(const T& v) : _value(v) {}
+    Observable(const T& v = {}) : _value(v) {}
 
     const T& Get() const { return _value; }
     operator const T&() const { return _value; }
@@ -18,19 +14,16 @@ public:
     const T& operator*() const { return _value; }
     T& operator*() { return _value; }
 
-    void Set(const T& newValue) {
-        if (_value != newValue) {
-            _value = newValue;
-            for (auto& cb : _callbacks) {
-				cb(_value);
-			}
+    void Set(const T& v) {
+        if (_value != v) {
+            _value = v;
+            onChange.Call(_value);
         }
     }
 
-    void OnChange(Callback cb) { _callbacks.push_back(std::move(cb)); }
+	Callback<T> onChange;
 
 private:
-    T _value{};
-    std::vector<Callback> _callbacks;
+    T _value;
 };
 

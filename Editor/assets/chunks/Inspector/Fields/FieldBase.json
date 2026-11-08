@@ -1,0 +1,46 @@
+{
+	"type": "GameObject",
+	"name": "PLACEHOLDER",
+	"properties": {
+		"UILayout": {
+			"width": {
+				"mode": "Percent",
+				"value": 100
+			},
+			"height": {
+				"mode": "Auto"
+			},
+			"padding": {
+				"top": 10,
+				"bottom": 10,
+				"left": 10,
+				"right": 10
+			}
+		},
+		"UIPanel": {
+			"color": "#00000000",
+			"flow": "Depth"
+		}
+	},
+	"children": [
+		{
+			"type": "GameObject",
+			"name": "background",
+			"properties": {
+				"UILayout": {
+					"width": {
+						"mode": "Percent",
+						"value": 100
+					},
+					"height": {
+						"mode": "Percent",
+						"value": 100
+					}
+				},
+				"UIIcon": {
+					"color": "#262632"
+				}
+			}
+		}
+	]
+}

@@ -55,7 +55,7 @@ public:
 	void Invoke(const std::string& key, json args) const {
 		auto it = _actions.find(key);
 		if (it == _actions.end()) {
-			std::cerr << "[ActionRegistry] JAction not found: '" << key << "'" << std::endl;
+			std::cerr << "[ActionRegistry] Action not found: '" << key << "'" << std::endl;
 			std::abort();
 		}
 		it->second(args);

@@ -17,6 +17,11 @@ target_include_directories(Editor PRIVATE
     ${CMAKE_SOURCE_DIR}/Engine/src
 )
 
+# Include editor headers
+target_include_directories(Editor PRIVATE
+	${CMAKE_SOURCE_DIR}/Editor/src
+)
+
 # Link engine library
 target_link_libraries(Editor PRIVATE Engine)
 

@@ -25,6 +25,15 @@ void UIInput::FromJSON(const json& j) {
 	_initialFontSize = j["fontSize"];
 }
 
+void UIInput::_InitInputHandler() {
+	json inputHandlerChunk = {
+		{ "InputHandler", {
+			{ "initialValue", _initialText }
+		}}
+	};
+	_inputHandler = _gameObject.lock()->AddProperty<InputHandler>(inputHandlerChunk);
+}
+
 void UIInput::OnCreate(std::weak_ptr<Scene> weakScene) {
 	UIWidget::OnCreate(weakScene);
 
@@ -105,12 +114,7 @@ void UIInput::OnCreate(std::weak_ptr<Scene> weakScene) {
 		_cursor->MarkDirty();
 	}
 
-	json inputHandlerChunk = {
-		{ "InputHandler", {
-			{ "initialValue", _initialText }
-		}}
-	};
-	_inputHandler = _gameObject.lock()->AddProperty<InputHandler>(inputHandlerChunk);
+	_InitInputHandler();
 	
 	_inputHandler->onCursorMoved.Subscribe([this](int cursor, std::string text) {
 		std::string before = text.substr(0, cursor);
@@ -125,7 +129,7 @@ void UIInput::OnCreate(std::weak_ptr<Scene> weakScene) {
 		onCommit.Call(str);
 	});
 	_inputHandler->onBlurRequested.Subscribe([this]() {
-		if (auto canvas = _canvas.lock()) {
+		if (std::shared_ptr<UICanvas> canvas = _canvas.lock()) {
 			canvas->Focus(nullptr);
 		}
 	});
@@ -134,14 +138,14 @@ void UIInput::OnCreate(std::weak_ptr<Scene> weakScene) {
 		_label->SetText(str);
 	});
 	onClick.Subscribe([this]() {
-		if (auto canvas = _canvas.lock()) {
+		if (std::shared_ptr<UICanvas> canvas = _canvas.lock()) {
 			canvas->Focus(this);
 		}
 	});
 }
 
 void UIInput::SetText(const std::string& text) {
-	_inputHandler->SetValue(text);
+	_inputHandler->SetInput(text);
 }
 
 void UIInput::OnFocus() {
